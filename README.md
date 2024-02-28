@@ -11,4 +11,4 @@ This repository is a creative collection of GLSL shaders, crafted purely for the
 | Sr. No | Name                   | Link                                    |
 |:-------|:-----------------------|:----------------------------------------|
 | 1      | Kaleidoscope           | https://kaleidoscope-sk027.vercel.app/  |
-| 2      | Wlectric Waves         | https://electric-waves-sko27.vercel.app/|
+| 2      | Wlectric Waves         | https://electric-waves-sk027.vercel.app/|
