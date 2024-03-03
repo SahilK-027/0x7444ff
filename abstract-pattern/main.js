@@ -45,9 +45,9 @@ if (material.uniforms) {
   if (material.uniforms.uFrequency) {
     gui
       .add(material.uniforms.uFrequency, "value")
-      .min(0.0)
-      .max(100.0)
-      .step(0.1)
+      .min(0.5)
+      .max(20.0)
+      .step(0.01)
       .name("Frequency");
   }
 
