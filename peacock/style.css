@@ -9,7 +9,7 @@
 html,
 body {
   overflow: hidden;
-  background-color: #f8f7f3;
+  background-color: #121316;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,7 +27,7 @@ body {
 }
 
 .underlay {
-  color: #000;
+  color: #fff;
   position: absolute;
   width: 100vw;
   bottom: 0;
@@ -46,7 +46,7 @@ p {
   font-size: 14px;
 }
 a {
-  color: #000;
+  color: #fff;
   text-decoration: underline;
   text-underline-position: below;
   text-underline-offset: 3px;

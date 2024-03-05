@@ -77,7 +77,7 @@ renderer.setPixelRatio(sizes.pixelRatio);
 /**
  * Particles
  */
-const particlesGeometry = new THREE.PlaneGeometry(10, 10, 32, 32);
+const particlesGeometry = new THREE.PlaneGeometry(10, 10, 256, 256);
 
 const particlesMaterial = new THREE.ShaderMaterial({
   vertexShader: particlesVertexShader,
@@ -88,6 +88,9 @@ const particlesMaterial = new THREE.ShaderMaterial({
         sizes.width * sizes.pixelRatio,
         sizes.height * sizes.pixelRatio
       )
+    ),
+    uPictureTexture: new THREE.Uniform(
+      textureLoader.load("./assets/image.png")
     ),
   },
 });
