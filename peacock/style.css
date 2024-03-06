@@ -9,11 +9,17 @@
 html,
 body {
   overflow: hidden;
-  background-color: #121316;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: "Open Sans", sans-serif;
+}
+body {
+  width: 100vw;
+  height: 100vh;
+  background: rgb(7, 12, 16);
+  background-color: #2234ae;
+  background: radial-gradient(circle, #000 40%, #161837 90%, #17193a 100%);
 }
 
 .webgl {
