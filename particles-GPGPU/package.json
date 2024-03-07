@@ -1,0 +1,18 @@
+{
+  "name": "particles-gpgpu",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^5.0.12"
+  },
+  "dependencies": {
+    "lil-gui": "^0.19.1",
+    "three": "^0.160.0",
+    "vite-plugin-glsl": "^1.2.1"
+  }
+}
