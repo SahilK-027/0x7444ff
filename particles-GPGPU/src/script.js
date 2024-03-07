@@ -98,11 +98,16 @@ renderer.setPixelRatio(sizes.pixelRatio);
 debugObject.clearColor = "#292530";
 renderer.setClearColor(debugObject.clearColor);
 
+/**
+ * Load model
+ */
+const gltf = await gltfLoader.loadAsync("./model.glb");
+
 /**=======================================================================
  * * Base Geometry
 ======================================================================= */
 const baseGeometry = {};
-baseGeometry.instance = new THREE.SphereGeometry(3);
+baseGeometry.instance = gltf.scene.children[0].geometry;
 baseGeometry.count = baseGeometry.instance.attributes.position.count;
 
 /**=======================================================================
@@ -150,7 +155,7 @@ gpgpu.debug = new THREE.Mesh(
   })
 );
 gpgpu.debug.position.set(3, 0, 0);
-scene.add(gpgpu.debug);
+// scene.add(gpgpu.debug);
 
 /**=======================================================================
  * * Particles
@@ -158,6 +163,8 @@ scene.add(gpgpu.debug);
 const particles = {};
 // Geometry
 const particlesUvArray = new Float32Array(baseGeometry.count * 2);
+const sizesArray = new Float32Array(baseGeometry.count);
+
 for (let y = 0; y < gpgpu.size; y++) {
   for (let x = 0; x < gpgpu.size; x++) {
     const i = y * gpgpu.size + x;
@@ -169,6 +176,9 @@ for (let y = 0; y < gpgpu.size; y++) {
 
     particlesUvArray[i2 + 0] = uvX;
     particlesUvArray[i2 + 1] = uvY;
+
+    // Size
+    sizesArray[i] = Math.random();
   }
 }
 
@@ -179,13 +189,21 @@ particles.geometry.setAttribute(
   "aParticlesUv",
   new THREE.BufferAttribute(particlesUvArray, 2)
 );
+particles.geometry.setAttribute(
+  "aColor",
+  baseGeometry.instance.attributes.color
+);
+particles.geometry.setAttribute(
+  "aSize",
+  new THREE.BufferAttribute(sizesArray, 1)
+);
 
 // Material
 particles.material = new THREE.ShaderMaterial({
   vertexShader: particlesVertexShader,
   fragmentShader: particlesFragmentShader,
   uniforms: {
-    uSize: new THREE.Uniform(0.1),
+    uSize: new THREE.Uniform(0.07),
     uResolution: new THREE.Uniform(
       new THREE.Vector2(
         sizes.width * sizes.pixelRatio,
@@ -209,8 +227,8 @@ gui.addColor(debugObject, "clearColor").onChange(() => {
 gui
   .add(particles.material.uniforms.uSize, "value")
   .min(0)
-  .max(1)
-  .step(0.001)
+  .max(0.5)
+  .step(0.0001)
   .name("uSize");
 
 /**=======================================================================

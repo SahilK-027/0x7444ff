@@ -11,6 +11,7 @@ export default {
     outDir: "../dist",
     emptyOutDir: true,
     sourcemap: true,
+    target: "esnext",
   },
   plugins: [glsl()],
 };
