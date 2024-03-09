@@ -8,13 +8,16 @@ import particlesVertexShader from "./shaders/particles/vertex.glsl";
 import particlesFragmentShader from "./shaders/particles/fragment.glsl";
 import gpgpuParticlesFragmentShader from "./shaders/gpgpu/particles-frag.glsl";
 
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 const models = [
   {
+    name: "Rose Garden",
     modelLink: "./rose.glb",
     camera: {
       x: 0,
       y: 10,
-      z: 35,
+      z: 35 + (isMobile ? 10 : 0),
     },
     clearColor: "#120310",
     rotation: {
@@ -25,13 +28,14 @@ const models = [
     uSize: 0.17,
   },
   {
+    name: "MV Spartan",
     modelLink: "./model.glb",
     camera: {
       x: 4.5,
       y: 4,
-      z: 20,
+      z: 20 + (isMobile ? 8 : 0),
     },
-    clearColor: "#292530",
+    clearColor: "#1a1622",
     rotation: {
       x: 0,
       y: (-1 * Math.PI) / 8,
@@ -40,11 +44,12 @@ const models = [
     uSize: 0.07,
   },
   {
+    name: "Flowerpot",
     modelLink: "./flowerpot.glb",
     camera: {
       x: 0,
       y: 0,
-      z: 70,
+      z: 70 + (isMobile ? 25 : 0),
     },
     clearColor: "#2a1325",
     rotation: {
@@ -58,35 +63,36 @@ const models = [
     Frequency: 0.5,
   },
   {
+    name: "Chameleon",
     modelLink: "./chameleon.glb",
     camera: {
       x: 0,
       y: 10,
-      z: 16,
+      z: 16 + (isMobile ? 8 : 0),
     },
     clearColor: "#041615",
     rotation: {
       x: 0,
-      y: 0,
+      y: 0 + (isMobile ? -0.4 : 0),
       z: 0,
     },
     uSize: 0.14,
   },
 ];
 // Get the previously selected model index from the cookie
-const previousModelIndex = parseInt(document.cookie ? document.cookie : 0);
+const previousModelIndex = parseInt(document.cookie ? document.cookie : -1);
 
 // Generate a new model index different from the previous one
-let modelIndex = Math.floor(Math.random() * models.length);
-while (modelIndex === previousModelIndex) {
-  modelIndex = Math.floor(Math.random() * models.length);
-}
+let modelIndex = (previousModelIndex + 1) % models.length;
+document.getElementById("curr-model-name").innerText =
+  models[modelIndex % models.length].name;
+document.getElementById("next-model-name").innerText =
+  models[(modelIndex + 1) % models.length].name;
 
 // Set the new model index to the cookie
 document.cookie = modelIndex;
 
 const model = models[modelIndex];
-
 /**
  * Base
  */
@@ -96,6 +102,9 @@ const model = models[modelIndex];
 const gui = new GUI({
   width: 300,
 });
+if (isMobile) {
+  gui.close();
+}
 const debugObject = {};
 
 /**=======================================================================
