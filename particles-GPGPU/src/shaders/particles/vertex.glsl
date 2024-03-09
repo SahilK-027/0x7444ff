@@ -18,9 +18,14 @@ void main() {
     gl_Position = projectedPosition;
 
     // Point size
-    gl_PointSize = aSize * uSize * uResolution.y;
+    float sizeIn = smoothstep(0.0, 0.1, particle.w);
+    float sizeOut = 1.0 - smoothstep(0.7, 1.0, particle.w);
+    float size = min(sizeIn, sizeOut);
+ 
+    gl_PointSize = size * aSize * uSize * uResolution.y;
     gl_PointSize *= (1.0 / -viewPosition.z);
 
     // Varyings
+    // vColor = vec3(0.17, 1.0, 0.72);
     vColor = aColor;
 }

@@ -8,13 +8,83 @@ import particlesVertexShader from "./shaders/particles/vertex.glsl";
 import particlesFragmentShader from "./shaders/particles/fragment.glsl";
 import gpgpuParticlesFragmentShader from "./shaders/gpgpu/particles-frag.glsl";
 
+const models = [
+  {
+    modelLink: "./rose.glb",
+    camera: {
+      x: 0,
+      y: 10,
+      z: 35,
+    },
+    clearColor: "#120310",
+    rotation: {
+      x: Math.PI / 3,
+      y: Math.PI / 2,
+      z: Math.PI / 2,
+    },
+    uSize: 0.17,
+  },
+  {
+    modelLink: "./model.glb",
+    camera: {
+      x: 4.5,
+      y: 4,
+      z: 20,
+    },
+    clearColor: "#292530",
+    rotation: {
+      x: 0,
+      y: (-1 * Math.PI) / 8,
+      z: 0,
+    },
+    uSize: 0.07,
+  },
+  {
+    modelLink: "./flowerpot.glb",
+    camera: {
+      x: 0,
+      y: 0,
+      z: 70,
+    },
+    clearColor: "#2a1325",
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    uSize: 0.4,
+    Influence: 0.3,
+    Strength: 4,
+    Frequency: 0.5,
+  },
+  {
+    modelLink: "./chameleon.glb",
+    camera: {
+      x: 0,
+      y: 10,
+      z: 16,
+    },
+    clearColor: "#041615",
+    rotation: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    uSize: 0.14,
+  },
+];
+
+const model = models[0];
+
 /**
  * Base
  */
 /**=======================================================================
  * * DEBUG
 ======================================================================= */
-const gui = new GUI({ width: 340 });
+const gui = new GUI({
+  width: 300,
+});
 const debugObject = {};
 
 /**=======================================================================
@@ -73,18 +143,20 @@ window.addEventListener("resize", () => {
 const camera = new THREE.PerspectiveCamera(
   35,
   sizes.width / sizes.height,
-  0.1,
-  100
+  0.01,
+  1000
 );
-camera.position.set(4.5, 4, 20);
+camera.position.set(model.camera.x, model.camera.y, model.camera.z);
 scene.add(camera);
 
 /**=======================================================================
  * * Orbit Controls
 ======================================================================= */
 const controls = new OrbitControls(camera, canvas);
+controls.minPolarAngle = Math.PI / 5;
+controls.maxPolarAngle = Math.PI / 2;
 controls.enableDamping = true;
-
+controls.enablePan = false;
 /**=======================================================================
  * * 3D Renderer
 ======================================================================= */
@@ -95,13 +167,13 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(sizes.pixelRatio);
 
-debugObject.clearColor = "#292530";
+debugObject.clearColor = model.clearColor;
 renderer.setClearColor(debugObject.clearColor);
 
 /**
  * Load model
  */
-const gltf = await gltfLoader.loadAsync("./model.glb");
+const gltf = await gltfLoader.loadAsync(model.modelLink);
 
 /**=======================================================================
  * * Base Geometry
@@ -133,7 +205,7 @@ for (let i = 0; i < baseGeometry.count; i++) {
     baseGeometry.instance.attributes.position.array[i3 + 1];
   baseParticlesTexture.image.data[i4 + 2] =
     baseGeometry.instance.attributes.position.array[i3 + 2];
-  baseParticlesTexture.image.data[i4 + 3] = 0;
+  baseParticlesTexture.image.data[i4 + 3] = Math.random();
 }
 // Particles Data
 gpgpu.particlesVariable = gpgpu.computation.addVariable(
@@ -144,6 +216,24 @@ gpgpu.particlesVariable = gpgpu.computation.addVariable(
 gpgpu.computation.setVariableDependencies(gpgpu.particlesVariable, [
   gpgpu.particlesVariable,
 ]);
+
+// Uniforms
+gpgpu.particlesVariable.material.uniforms.uTime = new THREE.Uniform(0);
+gpgpu.particlesVariable.material.uniforms.uDeltaTime = new THREE.Uniform(0);
+gpgpu.particlesVariable.material.uniforms.uBase = new THREE.Uniform(
+  baseParticlesTexture
+);
+gpgpu.particlesVariable.material.uniforms.Influence = new THREE.Uniform(
+  model.Influence ? model.Influence : 0.2
+);
+gpgpu.particlesVariable.material.uniforms.Strength = new THREE.Uniform(
+  model.Strength ? model.Strength : 4.0
+);
+gpgpu.particlesVariable.material.uniforms.Frequency = new THREE.Uniform(
+  model.Frequency ? model.Frequency : 0.5
+);
+
+// Init
 gpgpu.computation.init();
 
 // Debug Plane
@@ -203,7 +293,7 @@ particles.material = new THREE.ShaderMaterial({
   vertexShader: particlesVertexShader,
   fragmentShader: particlesFragmentShader,
   uniforms: {
-    uSize: new THREE.Uniform(0.07),
+    uSize: new THREE.Uniform(model.uSize),
     uResolution: new THREE.Uniform(
       new THREE.Vector2(
         sizes.width * sizes.pixelRatio,
@@ -216,6 +306,9 @@ particles.material = new THREE.ShaderMaterial({
 
 // Points
 particles.points = new THREE.Points(particles.geometry, particles.material);
+particles.points.rotateZ(model.rotation.z);
+particles.points.rotateX(model.rotation.x);
+particles.points.rotateY(model.rotation.y);
 scene.add(particles.points);
 
 /**=======================================================================
@@ -229,7 +322,25 @@ gui
   .min(0)
   .max(0.5)
   .step(0.0001)
-  .name("uSize");
+  .name("Size");
+gui
+  .add(gpgpu.particlesVariable.material.uniforms.Influence, "value")
+  .min(0)
+  .max(1)
+  .step(0.001)
+  .name("Influence");
+gui
+  .add(gpgpu.particlesVariable.material.uniforms.Strength, "value")
+  .min(0)
+  .max(10)
+  .step(0.001)
+  .name("Strength");
+gui
+  .add(gpgpu.particlesVariable.material.uniforms.Frequency, "value")
+  .min(0)
+  .max(1)
+  .step(0.001)
+  .name("Frequency");
 
 /**=======================================================================
  * * Animation Loop
@@ -246,6 +357,8 @@ const tick = () => {
   controls.update();
 
   // Update GPGPU
+  gpgpu.particlesVariable.material.uniforms.uTime.value = elapsedTime;
+  gpgpu.particlesVariable.material.uniforms.uDeltaTime.value = deltaTime;
   gpgpu.computation.compute();
   particles.material.uniforms.uParticlesTexture.value =
     gpgpu.computation.getCurrentRenderTarget(gpgpu.particlesVariable).texture;
