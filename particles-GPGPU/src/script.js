@@ -73,8 +73,19 @@ const models = [
     uSize: 0.14,
   },
 ];
+// Get the previously selected model index from the cookie
+const previousModelIndex = parseInt(document.cookie ? document.cookie : 0);
 
-const model = models[0];
+// Generate a new model index different from the previous one
+let modelIndex = Math.floor(Math.random() * models.length);
+while (modelIndex === previousModelIndex) {
+  modelIndex = Math.floor(Math.random() * models.length);
+}
+
+// Set the new model index to the cookie
+document.cookie = modelIndex;
+
+const model = models[modelIndex];
 
 /**
  * Base
