@@ -30,7 +30,7 @@ body {
   z-index: 0;
 }
 
-.next-model {
+.curr-model {
   position: absolute;
   top: 0;
   left: 0;
@@ -42,32 +42,71 @@ body {
   color: #c5c5c5;
 
   #curr-model-name {
-    padding-left: 8px;
-    padding-right: 8px;
-    background: #7444ff;
+    font-weight: 600;
+    padding-left: 4px;
+    padding-right: 4px;
     border-radius: 4px;
-    margin: 0px 10px;
-    color: #fff;
+    margin: 0px 2px;
+    color: #35ffd0;
+    underline-offset: 8px;
     font-size: 1.2rem;
-    font-weight: 800;
+  }
+  .music-icon {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+
+    span {
+      width: 3px;
+      height: 100%;
+      background-color: #30e8bd;
+      border-radius: 3px;
+      animation: bounce 2.2s ease infinite alternate;
+      content: "";
+    }
+    span {
+      &:nth-of-type(2) {
+        animation-delay: -2.2s; /* Start at the end of animation */
+      }
+
+      &:nth-of-type(3) {
+        animation-delay: -3.7s; /* Start mid-way of return of animation */
+      }
+    }
+
+    span.paused{
+      animation-play-state: paused;
+    }
+  }
+}
+
+@keyframes bounce {
+  10% {
+    transform: scaleY(0.3);
   }
 
-  #next-model-name {
-    font-weight: 600;
-    padding-left: 8px;
-    padding-right: 8px;
-    border-radius: 4px;
-    margin: 0px 5px;
-    text-decoration: underline;
-    text-underline-position: under;
-    color: #30e8bd;
-    underline-offset: 8px;
-    font-size: 1rem;
+  30% {
+    transform: scaleY(1);
+  }
+
+  60% {
+    transform: scaleY(0.5);
+  }
+
+  80% {
+    transform: scaleY(0.75);
+  }
+
+  100% {
+    transform: scaleY(0.6);
   }
 }
 
 @media (max-width: 768px) {
-  .next-model {
+  .curr-model {
     position: absolute;
     top: 0;
     left: 0;
@@ -80,23 +119,11 @@ body {
     font-size: 0.8rem;
 
     #curr-model-name {
-      padding-left: 8px;
-      padding-right: 8px;
-      background: #7444ff;
-      border-radius: 4px;
-      margin: 0px 10px;
-      color: #fff;
-      font-size: 0.9rem;
-    }
-
-    #next-model-name {
       font-weight: 600;
-      padding-left: 8px;
-      padding-right: 8px;
+      padding-left: 4px;
+      padding-right: 4px;
       border-radius: 4px;
-      margin: 0px 5px;
-      text-decoration: underline;
-      text-underline-position: under;
+      margin: 0px 2px;
       color: #30e8bd;
       underline-offset: 8px;
       font-size: 0.9rem;
@@ -132,7 +159,26 @@ a {
   transition: all 0.3s ease;
 }
 a:hover {
-  color: #7444ff;
+  color: #b286ff;
+}
+#next-model-button {
+  padding: 10px 20px;
+  background: #7444ff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  margin: 30px 30px;
+}
+#next-model-button:hover {
+  background: #5f3cc2;
 }
 
 @media (max-width: 768px) {
@@ -141,5 +187,9 @@ a:hover {
   }
   h1 {
     font-size: 30px;
+  }
+  #next-model-button {
+    padding: 10px 20px;
+    margin: 20px 20px;
   }
 }

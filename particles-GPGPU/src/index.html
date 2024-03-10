@@ -8,15 +8,27 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div class="next-model">
-      <h3>Current Experience:<span id="curr-model-name">Rose</span></h3>
-      <h3>Next up:<span id="next-model-name">Rose</span></h3>
-      <p>Refresh page to get new model.</p>
+    <div class="curr-model">
+      <h3>Current Experience:<span id="curr-model-name"></span></h3>
+      <p>
+        Model Credits: <a target="_blank" id="credits-anchor" href="">Model</a>
+      </p>
+      <p>
+        Music Credits:
+        <a target="_blank" id="music-credits-anchor" href=""></a>
+      </p>
+      <div id="music-play-btn" class="music-icon">
+        <span class="music-bar paused"></span>
+        <span class="music-bar paused"></span>
+        <span class="music-bar paused"></span>
+      </div>
     </div>
 
     <div>
       <h4 style="color: #fff">Loading Experience...!</h4>
     </div>
+
+    <button id="next-model-button">New Model!</button>
     <div class="underlay">
       <h1>Particles-GPGPU</h1>
       <p>

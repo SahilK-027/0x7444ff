@@ -12,7 +12,7 @@ const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
 const models = [
   {
-    name: "Rose Garden",
+    name: "Spring Rose Garden",
     modelLink: "./rose.glb",
     camera: {
       x: 0,
@@ -26,6 +26,11 @@ const models = [
       z: Math.PI / 2,
     },
     uSize: 0.17,
+    credits:
+      "https://sketchfab.com/3d-models/spring-rose-garden-e938074ab933476e9b9a2be772e03335",
+    music: "./audio/rose.mp3",
+    musicCredits: "https://pixabay.com/users/lesfm-22579021",
+    musicCreator: "Lesfm",
   },
   {
     name: "MV Spartan",
@@ -42,6 +47,11 @@ const models = [
       z: 0,
     },
     uSize: 0.07,
+    credits:
+      "https://sketchfab.com/3d-models/mv-spartan-e2c3ced464f14e3b864f15871bf6d87d",
+    music: "./audio/mvspartan.mp3",
+    musicCredits: "https://pixabay.com/users/humanoide_media-12661853/",
+    musicCreator: "Luis Humanoide",
   },
   {
     name: "Flowerpot",
@@ -61,6 +71,11 @@ const models = [
     Influence: 0.3,
     Strength: 4,
     Frequency: 0.5,
+    credits:
+      "https://sketchfab.com/3d-models/flowers-in-vase-b1047276fc7f4421b5f695ad9ff59e72",
+    music: "./audio/flowers.mp3",
+    musicCredits: "https://pixabay.com/users/oleksii_kalyna-39191707/",
+    musicCreator: "Oleksii Kalyna",
   },
   {
     name: "Chameleon",
@@ -77,6 +92,11 @@ const models = [
       z: 0,
     },
     uSize: 0.14,
+    credits:
+      "https://sketchfab.com/3d-models/parsons-chameleon-calumma-parsonii-69b6bd49bf564b8c85d9921caa84e56a",
+    music: "./audio/chameleon.mp3",
+    musicCredits: "https://pixabay.com/users/shidenbeatsmusic-25676252",
+    musicCreator: "Shiden Beats Music",
   },
 ];
 // Get the previously selected model index from the cookie
@@ -84,15 +104,43 @@ const previousModelIndex = parseInt(document.cookie ? document.cookie : -1);
 
 // Generate a new model index different from the previous one
 let modelIndex = (previousModelIndex + 1) % models.length;
-document.getElementById("curr-model-name").innerText =
-  models[modelIndex % models.length].name;
-document.getElementById("next-model-name").innerText =
-  models[(modelIndex + 1) % models.length].name;
+document.getElementById("curr-model-name").innerText = models[modelIndex].name;
+document.getElementById("credits-anchor").href = models[modelIndex].credits;
+document.getElementById("music-credits-anchor").innerText =
+  models[modelIndex].musicCreator;
+document.getElementById("music-credits-anchor").href =
+  models[modelIndex].musicCredits;
 
 // Set the new model index to the cookie
 document.cookie = modelIndex;
 
+// Play the music
+const audio = new Audio(models[modelIndex].music);
+audio.loop = true;
+audio.volume = 0.2;
+const ctx = new window.AudioContext();
+
+const musicBars = document.querySelectorAll(".music-bar");
+document.getElementById("music-play-btn").addEventListener("click", () => {
+  ctx.resume();
+  if (audio.paused) {
+    musicBars.forEach((bar) => {
+      bar.classList.remove("paused");
+    });
+    audio.play();
+  } else {
+    musicBars.forEach((bar) => {
+      bar.classList.add("paused");
+    });
+    audio.pause();
+  }
+});
+
 const model = models[modelIndex];
+
+document.getElementById("next-model-button").addEventListener("click", () => {
+  window.location.reload();
+});
 /**
  * Base
  */
