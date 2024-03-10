@@ -7,6 +7,10 @@ import GUI from "lil-gui";
 import particlesVertexShader from "./shaders/particles/vertex.glsl";
 import particlesFragmentShader from "./shaders/particles/fragment.glsl";
 import gpgpuParticlesFragmentShader from "./shaders/gpgpu/particles-frag.glsl";
+import roseMusic from "./audio/rose.mp3";
+import spartanMusic from "./audio/rose.mp3";
+import flowerMusic from "./audio/rose.mp3";
+import chameleonMusic from "./audio/rose.mp3";
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
@@ -28,7 +32,7 @@ const models = [
     uSize: 0.17,
     credits:
       "https://sketchfab.com/3d-models/spring-rose-garden-e938074ab933476e9b9a2be772e03335",
-    music: "./audio/rose.mp3",
+    music: roseMusic,
     musicCredits: "https://pixabay.com/users/lesfm-22579021",
     musicCreator: "Lesfm",
   },
@@ -49,7 +53,7 @@ const models = [
     uSize: 0.07,
     credits:
       "https://sketchfab.com/3d-models/mv-spartan-e2c3ced464f14e3b864f15871bf6d87d",
-    music: "./audio/mvspartan.mp3",
+    music: spartanMusic,
     musicCredits: "https://pixabay.com/users/humanoide_media-12661853/",
     musicCreator: "Luis Humanoide",
   },
@@ -73,7 +77,7 @@ const models = [
     Frequency: 0.5,
     credits:
       "https://sketchfab.com/3d-models/flowers-in-vase-b1047276fc7f4421b5f695ad9ff59e72",
-    music: "./audio/flowers.mp3",
+    music: flowerMusic,
     musicCredits: "https://pixabay.com/users/oleksii_kalyna-39191707/",
     musicCreator: "Oleksii Kalyna",
   },
@@ -94,7 +98,7 @@ const models = [
     uSize: 0.14,
     credits:
       "https://sketchfab.com/3d-models/parsons-chameleon-calumma-parsonii-69b6bd49bf564b8c85d9921caa84e56a",
-    music: "./audio/chameleon.mp3",
+    music: chameleonMusic,
     musicCredits: "https://pixabay.com/users/shidenbeatsmusic-25676252",
     musicCreator: "Shiden Beats Music",
   },
