@@ -8,9 +8,9 @@ import particlesVertexShader from "./shaders/particles/vertex.glsl";
 import particlesFragmentShader from "./shaders/particles/fragment.glsl";
 import gpgpuParticlesFragmentShader from "./shaders/gpgpu/particles-frag.glsl";
 import roseMusic from "./audio/rose.mp3";
-import spartanMusic from "./audio/rose.mp3";
-import flowerMusic from "./audio/rose.mp3";
-import chameleonMusic from "./audio/rose.mp3";
+import spartanMusic from "./audio/mvspartan.mp3";
+import flowerMusic from "./audio/flowers.mp3";
+import chameleonMusic from "./audio/chameleon.mp3";
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
