@@ -5,6 +5,11 @@ import GUI from "lil-gui";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
+const rangeFunction = (a, b) => {
+  let r = Math.random();
+  return a * r + b * (1 - r);
+};
+
 /**
  * Base
  */
@@ -14,6 +19,7 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
+const scene1 = new THREE.Scene();
 
 /**
  * Textures
@@ -21,7 +27,7 @@ const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
 const bgTexture = textureLoader.load("/textures/logoBG.jpg");
 const fgTexture = textureLoader.load("/textures/logo.jpg");
-const blob = textureLoader.load("/blob.png");
+const blobTexture = textureLoader.load("/blob.png");
 
 let fgMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(1, 1, 32, 32),
@@ -43,15 +49,40 @@ const bgMesh = new THREE.Mesh(
     uniforms: {
       uTexture: { value: bgTexture },
       mask: {
-        value: blob
+        value: blobTexture,
       },
     },
-    transparent: true
+    transparent: true,
   })
 );
 bgMesh.scale.y = 2 / 3;
 bgMesh.position.z = 0.1;
 scene.add(bgMesh);
+
+/**
+ * Blobs
+ */
+let blobsCount = 50;
+let blobsMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(0.05, 0.05),
+  new THREE.MeshBasicMaterial({
+    map: blobTexture,
+    transparent: true,
+  })
+);
+
+const allBlobs = [];
+blobsMesh.position.z = 0.15;
+scene.add(blobsMesh);
+for (let i = 0; i < blobsCount; i++) {
+  let clonnedBlob = blobsMesh.clone();
+  let deviation = rangeFunction(0, 2 * Math.PI);
+  let r = rangeFunction(0.1, 0.02);
+  clonnedBlob.position.x = r * Math.sin(deviation);
+  clonnedBlob.position.y = r * Math.cos(deviation);
+  allBlobs.push(clonnedBlob);
+  scene.add(clonnedBlob);
+}
 
 // Debug
 // const gui = new GUI();
@@ -90,6 +121,8 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
+const renderTarget = new THREE.WebGLRenderTarget(sizes.width, sizes.height, {});
+
 /**
  * Camera
  */
@@ -103,7 +136,6 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0, 0, 0.47);
 scene.add(camera);
 
-
 /**
  * Raycaster and Mouse
  */
@@ -112,10 +144,10 @@ const mouse = new THREE.Vector2();
 const points = new THREE.Vector3();
 
 // Update mouse position on mousemove
-window.addEventListener('mousemove', (event) => {
+window.addEventListener("mousemove", (event) => {
   // Convert mouse position to normalized device coordinates (-1 to +1) for both components
   mouse.x = (event.clientX / sizes.width) * 2 - 1;
-  mouse.y = - (event.clientY / sizes.height) * 2 + 1;
+  mouse.y = -(event.clientY / sizes.height) * 2 + 1;
 
   // Update the raycaster
   raycaster.setFromCamera(mouse, camera);
@@ -127,7 +159,6 @@ window.addEventListener('mousemove', (event) => {
     points.copy(intersects[0].point);
   }
 });
-
 
 // Controls
 const controls = new OrbitControls(camera, canvas);
@@ -159,8 +190,6 @@ const tick = () => {
 
   // Render
   renderer.render(scene, camera);
-
-  console.log(points.x);
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
