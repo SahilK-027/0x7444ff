@@ -11,6 +11,19 @@ const rangeFunction = (a, b) => {
   let r = Math.random();
   return a * r + b * (1 - r);
 };
+
+let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+const demo1 = document.getElementById("demo-1");
+const demo2 = document.getElementById("demo-2");
+
+demo1.addEventListener("click", () => {
+  changeDemo("demo-1");
+});
+demo2.addEventListener("click", () => {
+  changeDemo("demo-2");
+});
+
 /**
  * Base setup
  */
@@ -55,8 +68,23 @@ window.addEventListener("mousemove", (event) => {
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
-const bgTexture = textureLoader.load("/textures/bg.png");
-const fgTexture = textureLoader.load("/textures/fg.png");
+let bgTexture = textureLoader.load("/textures/bg.png");
+let fgTexture = textureLoader.load("/textures/fg.png");
+
+const changeDemo = (demo) => {
+  if (demo === "demo-1") {
+    bgTexture = textureLoader.load("/textures/bg.png");
+    fgTexture = textureLoader.load("/textures/fg.png");
+  } else {
+    console.log("called");
+    fgTexture = textureLoader.load("/textures/bird-bw.jpg");
+    bgTexture = textureLoader.load("/textures/bird.jpg");
+  }
+
+  // Update the textures in the shader materials
+  fgMesh.material.uniforms.uTexture.value = fgTexture;
+  bgMesh.material.uniforms.uTexture.value = bgTexture;
+};
 const blobTexture = textureLoader.load("/blob.png");
 
 /**
@@ -100,12 +128,12 @@ scene.add(bgMesh);
 
 // Blobs
 const blobParams = {
-  blobsRadius: 0.001,
-  blobsdispersion: 0.03,
+  blobsRadius: isMobile ? 0.0001 : 0.001,
+  blobsdispersion: isMobile ? 0.01 : 0.03,
   blobsSpeed: 0.2,
-  blobsCount: 50,
+  blobsCount: isMobile ? 20 : 50,
   edgeOpacity: 0.9,
-  distortionSize: 0.07
+  distortionSize: isMobile ? 0.03 : 0.07,
 };
 
 let blobsMesh = new THREE.Mesh(
@@ -194,7 +222,7 @@ gui
       blob.material.opacity = value;
     });
   });
-  gui
+gui
   .add(blobParams, "distortionSize")
   .min(0.0)
   .max(0.5)
@@ -208,7 +236,12 @@ gui
       blob.geometry = new THREE.PlaneGeometry(value, value);
     });
   });
-gui.add(blobParams, "blobsSpeed").min(0.01).max(1).step(0.01).name("Blobs Speed");
+gui
+  .add(blobParams, "blobsSpeed")
+  .min(0.01)
+  .max(1)
+  .step(0.01)
+  .name("Blobs Speed");
 gui
   .add(bgMesh.material.uniforms.uMovementStrength, "value")
   .min(0.0)
@@ -245,7 +278,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(0, 0, 0.4525);
+camera.position.set(0, 0, 0.425);
 scene.add(camera);
 
 /**

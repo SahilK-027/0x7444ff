@@ -28,6 +28,9 @@ body {
 
 .underlay {
   color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   position: absolute;
   width: 100vw;
   bottom: 0;
