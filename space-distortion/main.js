@@ -2,24 +2,30 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
-import vertexShader from "./shaders/vertex.glsl";
-import fragmentShader from "./shaders/fragment.glsl";
+import vertexShaderBG from "./shaders/vertexBG.glsl";
+import fragmentShaderBG from "./shaders/fragmentBG.glsl";
+import vertexShaderFG from "./shaders/vertexFG.glsl";
+import fragmentShaderFG from "./shaders/fragmentFG.glsl";
 
 const rangeFunction = (a, b) => {
   let r = Math.random();
   return a * r + b * (1 - r);
 };
-
 /**
- * Base
+ * Base setup
  */
-
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
 const scene1 = new THREE.Scene();
+
+// Sizes
+const sizes = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
 
 /**
  * Raycaster and Mouse
@@ -49,49 +55,19 @@ window.addEventListener("mousemove", (event) => {
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
-const bgTexture =  new THREE.VideoTexture(document.getElementById('fg-video'));
-const fgTexture = new THREE.VideoTexture(document.getElementById('bg-video'));
+const bgTexture = textureLoader.load("/textures/bg.png");
+const fgTexture = textureLoader.load("/textures/fg.png");
 const blobTexture = textureLoader.load("/blob.png");
 
-const vs1 = `
-uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 modelMatrix;
-
-attribute vec2 uv;
-attribute vec3 position;
-
-varying vec2 vUv;
-
-void main() {
-    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-    vec4 viewPosition = viewMatrix * modelPosition;
-    vec4 projectedPosition = projectionMatrix * viewPosition;
-    gl_Position = projectedPosition;
-
-    vUv = uv;
-}
-`;
-
-const fs1 = `
-precision mediump float;
-
-uniform vec3 uColor;
-uniform sampler2D uTexture;
-
-varying vec2 vUv;
-
-void main() {
-    vec4 textureColor = texture2D(uTexture, vUv);
-    gl_FragColor = textureColor;
-}
-`;
-
+/**
+ * Meshes
+ */
+// Forground mesh
 let fgMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(1, 1, 32, 32),
   new THREE.RawShaderMaterial({
-    vertexShader: vs1,
-    fragmentShader: fs1,
+    vertexShader: vertexShaderFG,
+    fragmentShader: fragmentShaderFG,
     side: THREE.DoubleSide,
     uniforms: {
       uTexture: { value: fgTexture },
@@ -99,99 +75,150 @@ let fgMesh = new THREE.Mesh(
   })
 );
 fgMesh.scale.y = 2 / 3;
+fgMesh.position.z = 0.1;
 scene.add(fgMesh);
 
-// Mesh
+// Background Mesh
 const bgMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(1, 1, 32, 32),
   new THREE.RawShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
+    vertexShader: vertexShaderBG,
+    fragmentShader: fragmentShaderBG,
     side: THREE.DoubleSide,
     uniforms: {
       uTexture: { value: bgTexture },
       mask: { value: blobTexture },
+      uMovementStrength: { value: 6.0 },
     },
     transparent: true,
   })
 );
 
 bgMesh.scale.y = 2 / 3;
-bgMesh.position.z = 0.02;
+bgMesh.position.z = 0.125;
 scene.add(bgMesh);
 
-/**
- * Blobs
- */
-let blobsCount = 50;
+// Blobs
+const blobParams = {
+  blobsRadius: 0.001,
+  blobsdispersion: 0.03,
+  blobsSpeed: 0.2,
+  blobsCount: 50,
+  edgeOpacity: 0.9,
+  distortionSize: 0.07
+};
+
 let blobsMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(0.1, 0.1),
+  new THREE.PlaneGeometry(blobParams.distortionSize, blobParams.distortionSize),
   new THREE.MeshBasicMaterial({
     map: blobTexture,
     transparent: true,
     blending: THREE.AdditiveBlending,
     depthTest: false,
     depthWrite: false,
-    opacity: 0.9,
+    opacity: blobParams.edgeOpacity,
   })
 );
 
-const allBlobs = [];
+let allBlobs = [];
 blobsMesh.position.z = 0.1;
 
-for (let i = 0; i < blobsCount; i++) {
-  let clonnedBlob = blobsMesh.clone();
-  let deviation = rangeFunction(0, 2 * Math.PI);
-  let r = rangeFunction(0.01, 0.08);
-  clonnedBlob.position.x = r * Math.sin(deviation);
-  clonnedBlob.position.y = r * Math.cos(deviation);
-  clonnedBlob.userData.life = rangeFunction(-2 * Math.PI, 2 * Math.PI);
+const createBlobs = () => {
+  // Remove old blobs
+  allBlobs.forEach((blob) => scene1.remove(blob));
+  allBlobs = [];
 
-  allBlobs.push(clonnedBlob);
-  scene1.add(clonnedBlob);
-}
+  for (let i = 0; i < blobParams.blobsCount; i++) {
+    let clonnedBlob = blobsMesh.clone();
+    let deviation = rangeFunction(0, 2 * Math.PI);
+    let r = rangeFunction(blobParams.blobsRadius, blobParams.blobsdispersion);
+    clonnedBlob.position.x = r * Math.sin(deviation);
+    clonnedBlob.position.y = r * Math.cos(deviation);
+    clonnedBlob.userData.life = rangeFunction(-2 * Math.PI, 2 * Math.PI);
+
+    allBlobs.push(clonnedBlob);
+    scene1.add(clonnedBlob);
+  }
+};
+
+createBlobs();
 
 const updateBlobs = () => {
   allBlobs.forEach((blob) => {
-    blob.userData.life += 0.175;
-    blob.scale.setScalar(Math.sin(0.5 * blob.userData.life));
+    blob.userData.life += blobParams.blobsSpeed;
+    blob.scale.setScalar(Math.sin(blob.userData.life / 2));
 
     if (blob.userData.life > 2 * Math.PI) {
       blob.userData.life = -2 * Math.PI;
 
       let deviation = rangeFunction(0, 2 * Math.PI);
-      let r = rangeFunction(0.01, 0.08);
+      let r = rangeFunction(blobParams.blobsRadius, blobParams.blobsdispersion);
 
       blob.position.x = points.x + r * Math.sin(deviation);
       blob.position.y = points.y + r * Math.cos(deviation);
     }
-    //reset life
   });
 };
 
-// Debug
-// const gui = new GUI();
-// gui
-//   .add(material.uniforms.uFrequency.value, "x")
-//   .min(0)
-//   .max(20)
-//   .step(0.01)
-//   .name("frequencyX");
-// gui
-//   .add(material.uniforms.uFrequency.value, "y")
-//   .min(0)
-//   .max(20)
-//   .step(0.01)
-//   .name("frequencyY");
+/**
+ * Debug GUI
+ */
+const gui = new GUI();
+gui
+  .add(blobParams, "blobsRadius")
+  .min(0.0001)
+  .max(0.2)
+  .step(0.0001)
+  .name("Blobs Separation");
+gui
+  .add(blobParams, "blobsCount")
+  .min(0)
+  .max(100)
+  .step(1)
+  .name("Blobs Count")
+  .onChange(createBlobs);
+gui
+  .add(blobParams, "blobsdispersion")
+  .min(0.01)
+  .max(0.2)
+  .step(0.001)
+  .name("Blobs Positions");
+gui
+  .add(blobParams, "edgeOpacity")
+  .min(0.0)
+  .max(1.0)
+  .step(0.0001)
+  .name("Edge Opacity")
+  .onChange((value) => {
+    allBlobs.forEach((blob) => {
+      blob.material.opacity = value;
+    });
+  });
+  gui
+  .add(blobParams, "distortionSize")
+  .min(0.0)
+  .max(0.5)
+  .step(0.0001)
+  .name("Distortion Size")
+  .onChange((value) => {
+    blobsMesh.geometry.dispose();
+    blobsMesh.geometry = new THREE.PlaneGeometry(value, value);
+    allBlobs.forEach((blob) => {
+      blob.geometry.dispose();
+      blob.geometry = new THREE.PlaneGeometry(value, value);
+    });
+  });
+gui.add(blobParams, "blobsSpeed").min(0.01).max(1).step(0.01).name("Blobs Speed");
+gui
+  .add(bgMesh.material.uniforms.uMovementStrength, "value")
+  .min(0.0)
+  .max(10.0)
+  .step(1)
+  .name("Distortion Effect");
 
 /**
- * Sizes
+ * Window resize handler
  */
-const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
-
 window.addEventListener("resize", () => {
   // Update sizes
   sizes.width = window.innerWidth;
@@ -218,12 +245,14 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(0, 0, 0.5);
+camera.position.set(0, 0, 0.4525);
 scene.add(camera);
 
-// Controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+/**
+ * Orbit controls
+ */
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 
 /**
  * Renderer
@@ -244,7 +273,7 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
   // Update controls
-  controls.update();
+  // controls.update();
 
   updateBlobs();
 
@@ -257,10 +286,10 @@ const tick = () => {
   // Render scene to canvas
   renderer.setRenderTarget(null);
 
+  renderer.render(scene, camera);
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
-  renderer.render(scene, camera);
 };
 
 tick();
