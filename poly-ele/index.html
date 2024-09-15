@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+      }
+
+      html,
+      body {
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Open Sans", sans-serif;
+        background: #000;
+      }
+
+      .webgl {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        outline: none;
+        z-index: 0;
+      }
+
+      .underlay {
+        color: #fff;
+        position: absolute;
+        width: 100vw;
+        bottom: 0;
+        left: 0;
+        padding: 30px 30px;
+        z-index: 1;
+      }
+
+      .loader {
+        color: #fff;
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        padding: 30px 30px;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 35px;
+        margin-bottom: 0px;
+        padding: 8px 0px;
+      }
+
+      p {
+        margin-bottom: 2px;
+        font-weight: 300;
+        font-size: 14px;
+      }
+
+      a {
+        color: #fff;
+        text-decoration: underline;
+        text-underline-position: below;
+        text-underline-offset: 3px;
+        transition: all 0.3s ease;
+      }
+
+      a:hover {
+        color: #7444ff;
+      }
+    </style>
+    <title>Poly Ele</title>
+  </head>
+
+  <body>
+    <div class="loader" id="loader">
+      Loading Experience...!
+    </div>
+    <div class="underlay">
+      <h1>Poly Ele</h1>
+      <p>
+        Made with 💜 by
+        <a target="_blank" href="https://github.com/SahilK-027">SK027.</a>
+      </p>
+      <p>
+        Link to source Code:
+        <a target="_blank" href="https://github.com/SahilK-027/0x7444ff/tree/main/poly-ele">Code.</a>
+      </p>
+      <p>15 Sept 2024.</p>
+    </div>
+    <canvas class="webgl"></canvas>
+    <script type="module" src="/main.js"></script>
+  </body>
+
+</html>
