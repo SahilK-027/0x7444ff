@@ -79,7 +79,7 @@ const shaderMaterial = new THREE.ShaderMaterial({
     uProgress: { value: 1.0 },
     uRedShift: { value: 1.0 },
     uGreenShift: { value: 0.8 },
-    uBlueShift: { value: 0.1 },
+    uBlueShift: { value: 1.0 },
   },
   side: THREE.DoubleSide,
 });
@@ -87,14 +87,6 @@ const shaderMaterial = new THREE.ShaderMaterial({
 // GSAP Animations for uniforms
 gsap.to(shaderMaterial.uniforms.uProgress, {
   value: 0,
-  duration: 5,
-  ease: "power2.inOut",
-  repeat: -1,
-  yoyo: true,
-});
-
-gsap.to(shaderMaterial.uniforms.uMosaic, {
-  value: 50,
   duration: 5,
   ease: "power2.inOut",
   repeat: -1,
@@ -109,12 +101,6 @@ gui
   .max(1)
   .step(0.01)
   .name("Triangle Scale");
-gui
-  .add(shaderMaterial.uniforms.uProgress, "value")
-  .min(0)
-  .max(1)
-  .step(0.01)
-  .name("Effect Progress");
 gui
   .add(shaderMaterial.uniforms.uMosaic, "value")
   .min(0)
