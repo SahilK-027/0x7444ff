@@ -6,6 +6,13 @@ Welcome to the 0x7444ff Shader Collection – a compilation of GLSL shaders writ
 
 This repository is a creative collection of GLSL shaders, crafted purely for the joy of digital art development. Enjoy the junction where technology meets the Art!!!
 
+> [!TIP]
+> <details>
+> <summary>Why choose shader programming over built-in options?</summary>
+> 
+> Shader programming allows for greater control and customization of the rendering process. While Three.js provides many built-in materials and shaders for quick setup, writing custom shaders enables you to achieve unique visual effects, optimize performance, and implement complex calculations that built-in options may not support. By diving into GLSL (OpenGL Shading Language), you can enhance the visual fidelity and interactivity of your WebGL applications beyond standard capabilities.
+> </details>
+
 ## Collection Table
 
 <table>
@@ -68,4 +75,3 @@ This repository is a creative collection of GLSL shaders, crafted purely for the
 </tr>
 
 </table>
-
