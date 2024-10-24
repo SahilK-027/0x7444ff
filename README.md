@@ -2,6 +2,19 @@
 
 Welcome to the 0x7444ff Shader Collection – a compilation of GLSL shaders written by [@SahilK-027](https://github.com/SahilK-027)!
 
+> [!IMPORTANT]  
+> ## Before You Begin 👀
+> 
+> ### Performance Warning
+> Some shaders in this collection are computationally intensive. They are designed to push GPU limits and may cause performance drops on low-end or mobile devices. It’s recommended that they be tested on devices with modern graphics hardware.
+> 
+> ### Compatibility Considerations
+> These shaders are tested on WebGL2-compatible browsers such as Chrome, Firefox, and Edge. However, variations may occur depending on the hardware and browser versions. For the best experience, use the latest browser version and update your graphics drivers.
+> 
+> ### Learning Resources and Support
+> If you’re new to shader programming, explore [The Book of Shaders](https://thebookofshaders.com/) for guidance. For questions about this collection, start a discussion on the repository or reach out via GitHub.
+
+
 ## Overview
 
 This repository is a creative collection of GLSL shaders crafted purely for the joy of digital art development. Enjoy the junction where technology meets Art!
