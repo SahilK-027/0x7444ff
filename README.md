@@ -87,4 +87,10 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 <td><a href="https://glowing-phoenix-sk027.vercel.app/">Glowing Phoenix</a><br/></td>
 </tr>
 
+<tr>
+<td>(11)</td>
+<td><img width="300" src="https://github.com/user-attachments/assets/acc1266c-1ea0-4be5-a603-5dab9b12f1ba" alt="Adv-pattern preview"></td>
+<td><a href="https://0x7444ff-perlin-noise-advanced-abstract-pattern.vercel.app/">Advanced Abstract Pattern</a><br/></td>
+</tr>
+
 </table>
