@@ -1,0 +1,20 @@
+{
+  "name": "Perlin Noise",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "host": "vite --host"
+  },
+  "devDependencies": {
+    "vite": "^4.0.4",
+    "vite-plugin-glsl": "^1.0.2"
+  },
+  "dependencies": {
+    "gsap": "^3.11.4",
+    "lil-gui": "^0.20.0",
+    "three": "^0.148.0"
+  }
+}
