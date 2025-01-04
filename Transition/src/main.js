@@ -41,6 +41,7 @@ class ShaderRenderer {
         uResolution: {
           value: new THREE.Vector2(this.sizes.width, this.sizes.height),
         },
+        uTime: { value: 0 },
       },
       side: THREE.DoubleSide,
     });
@@ -89,6 +90,8 @@ class ShaderRenderer {
   }
 
   animate() {
+    const elapsedTime = performance.now() / 1000; // Time in seconds
+    this.material.uniforms.uTime.value = elapsedTime; // Update uTime
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     window.requestAnimationFrame(() => this.animate());

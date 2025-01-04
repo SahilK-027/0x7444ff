@@ -1,5 +1,7 @@
 uniform sampler2D uTexture;
 uniform vec2 uResolution;
+uniform vec2 uTime;
+
 varying vec2 vUv;
 
 vec3 gammaCorrect(vec3 color, float gamma) {
@@ -87,23 +89,29 @@ void main() {
     vec2 hexUv = barrelDistortionUvs * gridSize;
     vec4 hexCoords = hexCoordinates(hexUv);
     float hexDist = hexagonDistance(hexCoords.xy);
-    float hexBorder = smoothstep(0.48, 0.52, hexDist);
+    float hexBorder = smoothstep(0.47, 0.53, hexDist);
 
     // Square pixel grid
-    float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
+    // float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
 
     // Circular grid
-    float circleBorder = circularGrid(barrelDistortionUvs, gridSize, lineWidth);
+    // float circleBorder = circularGrid(barrelDistortionUvs, gridSize, lineWidth);
 
     // Octagonal grid
-    float octagonBorder = octagonalGrid(barrelDistortionUvs, gridSize, lineWidth);
-
-    // Combine all grids (you can modify this part to show different patterns)
-    // Example: showing octagonal grid
-    // gl_FragColor = vec4(vec3(octagonBorder), 1.0);
+    // float octagonBorder = octagonalGrid(barrelDistortionUvs, gridSize, lineWidth);
 
     // To switch between patterns, uncomment one of these:
+    // gl_FragColor = vec4(vec3(octagonBorder), 1.0);
+    // gl_FragColor = vec4(vec3(squareBorder), 1.0);
+    // gl_FragColor = vec4(vec3(circleBorder), 1.0);
+
     gl_FragColor = vec4(vec3(hexBorder), 1.0);
-    gl_FragColor = vec4(vec3(squareBorder), 1.0);
-    gl_FragColor = vec4(vec3(circleBorder), 1.0);
+    // Mix circle + octagon patterns
+    // float weightCircle = 0.25;
+    // float weightOctagon = 0.35;
+
+    // Combine patterns using weights
+    // float combinedPattern = weightCircle * circleBorder + weightOctagon * octagonBorder;
+
+    // gl_FragColor = vec4(vec3(combinedPattern), 1.0);
 }
