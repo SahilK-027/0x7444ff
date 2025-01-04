@@ -4,8 +4,8 @@ import GUI from "lil-gui";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 import "./style.css";
-import t1 from "./assets/t1.png";
-
+import t1 from "./assets/t7.png";
+import t2 from "./assets/t4.png";
 class ShaderRenderer {
   constructor() {
     this.gui = new GUI();
@@ -31,6 +31,7 @@ class ShaderRenderer {
     this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
     const texture1 = new THREE.TextureLoader().load(t1);
+    const texture2 = new THREE.TextureLoader().load(t2);
 
     texture1.wrapS = texture1.wrapT = THREE.ClampToEdgeWrapping;
 
@@ -38,12 +39,13 @@ class ShaderRenderer {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: { value: texture1 },
+        uTexture1: { value: texture1 },
+        uTexture2: { value: texture2 },
         uResolution: {
           value: new THREE.Vector2(this.sizes.width, this.sizes.height),
         },
         uTime: { value: 0 },
-        uTransition: { value: 1 },
+        uTransition: { value: 0.5 },
       },
       side: THREE.DoubleSide,
     });
@@ -53,7 +55,6 @@ class ShaderRenderer {
   }
 
   initCamera() {
-    // Adjust camera frustum based on aspect ratio
     this.camera = new THREE.OrthographicCamera(
       -1 / 2, // left
       1 / 2, // right
@@ -63,7 +64,7 @@ class ShaderRenderer {
       1000 // far
     );
 
-    this.camera.position.set(0.0, 0.0, 2.0); // Position the camera
+    this.camera.position.set(0.0, 0.0, 2.0);
     this.scene.add(this.camera);
   }
 
@@ -92,18 +93,17 @@ class ShaderRenderer {
   }
 
   animate() {
-    const elapsedTime = performance.now() / 1000; // Time in seconds
-    this.material.uniforms.uTime.value = elapsedTime; // Update uTime
+    const elapsedTime = performance.now() / 1000;
+    this.material.uniforms.uTime.value = elapsedTime;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     window.requestAnimationFrame(() => this.animate());
   }
 
   addGUIControls() {
-    // Add uTransition to GUI
     this.gui
       .add(this.material.uniforms.uTransition, "value", 0, 1)
-      .name("Transition"); // Slider from 0 to 1
+      .name("Transition");
   }
 
   startAnimationLoop() {

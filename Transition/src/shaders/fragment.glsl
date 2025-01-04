@@ -1,4 +1,5 @@
-uniform sampler2D uTexture;
+uniform sampler2D uTexture1;
+uniform sampler2D uTexture2;
 uniform vec2 uResolution;
 uniform float uTime;
 uniform float uTransition;
@@ -137,14 +138,14 @@ float simplexNoise(vec2 v) {
     return 130.0 * dot(m, g);
 }
 
+float remap(float value, float a, float b, float c, float d) {
+    return c + (value - a) * (d - c) / (b - a);
+}
+
 void main() {
     // Calculate aspect correction
     vec2 aspectCorrection = vec2(1.0, uResolution.y / uResolution.x);
     vec2 correctedUvs = scaleUvs(vUv, aspectCorrection);
-
-    // Texture 
-    vec4 texture = texture2D(uTexture, correctedUvs);
-    gl_FragColor = texture;
 
     vec2 barrelDistortionUvs = scaleUvs(correctedUvs, vec2(float(1.0 + length(vUv - 0.5))));
 
@@ -163,8 +164,14 @@ void main() {
 
     float offset = 0.2;
     float bounceTransition = 1.0 - smoothstep(0.0, 0.5, abs(uTransition - 0.5));
+    float blendCut = smoothstep(vUv.y - offset, vUv.y + offset, remap(uTransition + z * 0.08 * bounceTransition, 0.0, 1.0, -1.0 * offset, 1.0 + offset));
 
-    gl_FragColor = vec4(vec3(bounceTransition), 1.0);
+    // Textures
+    vec4 texture1 = texture2D(uTexture1, correctedUvs);
+    vec4 texture2 = texture2D(uTexture2, correctedUvs);
+
+    vec4 final = mix(texture1, texture2, blendCut);
+    gl_FragColor = vec4(final);
 
     // Square pixel grid
     // float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
