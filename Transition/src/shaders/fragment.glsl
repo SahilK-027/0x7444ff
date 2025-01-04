@@ -8,7 +8,7 @@ vec3 gammaCorrect(vec3 color, float gamma) {
 
 float hexagonDistance(vec2 uv) {
     vec2 s = vec2(1.0, 1.73205);
-    vec2 p = abs(uv - 0.5);
+    vec2 p = abs(uv);
     return max(dot(p, s * 0.5), p.x);
 }
 
@@ -46,10 +46,11 @@ void main() {
     gl_FragColor = texture;
 
     // Hex grid
-    vec2 hexUv = distortionUvs * 20.0;
+    vec2 hexUv = distortionUvs * 30.0;
     vec4 hexCoords = hexCoordinates(hexUv);
-
-    float hexDist = hexagonDistance(hexCoords.xy) + 0.05;
+    float hexDist = hexagonDistance(hexCoords.xy);
+    float border = smoothstep(0.48, 0.52, hexDist);
 
     gl_FragColor = vec4(gammaCorrect(vec3(hexDist), 2.2), 1.0);
+    gl_FragColor = vec4(vec3(border), 1.0);
 }
