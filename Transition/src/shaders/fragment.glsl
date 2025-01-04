@@ -32,15 +32,24 @@ vec4 hexCoordinates(vec2 uv) {
     return final;
 }
 
+vec2 scaleUvs(vec2 uv, vec2 aspectCorrection) {
+    return (uv - 0.5) * aspectCorrection + 0.5;
+}
+
 void main() {
     // Calculate aspect correction
     vec2 aspectCorrection = vec2(1.0, uResolution.y / uResolution.x);
-    vec2 correctedUvs = (vUv - 0.5) * aspectCorrection + 0.5;
+    vec2 correctedUvs = scaleUvs(vUv, aspectCorrection);
+    vec2 distortionUvs = scaleUvs(correctedUvs, vec2(float(1.0 + length(vUv - 0.5))));
+
     vec4 texture = texture2D(uTexture, vUv);
     gl_FragColor = texture;
 
     // Hex grid
-    vec2 hexUv = correctedUvs * 30.0;
+    vec2 hexUv = distortionUvs * 20.0;
     vec4 hexCoords = hexCoordinates(hexUv);
-    gl_FragColor = vec4(gammaCorrect(vec3(hexCoords.zw / 10.0, 0.0), 2.2), 1.0);
+
+    float hexDist = hexagonDistance(hexCoords.xy) + 0.05;
+
+    gl_FragColor = vec4(gammaCorrect(vec3(hexDist), 2.2), 1.0);
 }
