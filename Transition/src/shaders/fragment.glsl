@@ -6,6 +6,7 @@ vec3 gammaCorrect(vec3 color, float gamma) {
     return pow(color, vec3(1.0 / gamma));
 }
 
+// Hex grid generation
 float hexagonDistance(vec2 uv) {
     vec2 s = vec2(1.0, 1.73205);
     vec2 p = abs(uv);
@@ -36,21 +37,35 @@ vec2 scaleUvs(vec2 uv, vec2 aspectCorrection) {
     return (uv - 0.5) * aspectCorrection + 0.5;
 }
 
+// Square grid function
+float squareGrid(vec2 uv, float gridSize, float lineWidth) {
+    vec2 grid = fract(uv * gridSize);
+    vec2 borders = smoothstep(0.0, lineWidth, grid) *
+        smoothstep(0.0, lineWidth, 1.0 - grid);
+    return 1.0 - min(borders.x, borders.y);
+}
+
 void main() {
     // Calculate aspect correction
     vec2 aspectCorrection = vec2(1.0, uResolution.y / uResolution.x);
     vec2 correctedUvs = scaleUvs(vUv, aspectCorrection);
-    vec2 distortionUvs = scaleUvs(correctedUvs, vec2(float(1.0 + length(vUv - 0.5))));
 
-    vec4 texture = texture2D(uTexture, vUv);
+    // Texture 
+    vec4 texture = texture2D(uTexture, correctedUvs);
     gl_FragColor = texture;
 
+    vec2 barrelDistortionUvs = scaleUvs(correctedUvs, vec2(float(1.0 + length(vUv - 0.5))));
+
     // Hex grid
-    vec2 hexUv = distortionUvs * 30.0;
+    vec2 hexUv = barrelDistortionUvs * 30.0;
     vec4 hexCoords = hexCoordinates(hexUv);
     float hexDist = hexagonDistance(hexCoords.xy);
-    float border = smoothstep(0.48, 0.52, hexDist);
+    float hexBorder = smoothstep(0.48, 0.52, hexDist);
+    gl_FragColor = vec4(vec3(hexBorder), 1.0);
 
-    gl_FragColor = vec4(gammaCorrect(vec3(hexDist), 2.2), 1.0);
-    gl_FragColor = vec4(vec3(border), 1.0);
+    // Square pixel grid
+    float gridSize = 30.0;
+    float lineWidth = 0.03; 
+    float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
+    gl_FragColor = vec4(vec3(squareBorder), 1.0);
 }
