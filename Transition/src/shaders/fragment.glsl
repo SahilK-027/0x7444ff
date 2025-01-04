@@ -40,7 +40,7 @@ void main() {
     gl_FragColor = texture;
 
     // Hex grid
-    vec2 hexUv = correctedUvs * 20.0;
+    vec2 hexUv = correctedUvs * 30.0;
     vec4 hexCoords = hexCoordinates(hexUv);
-    gl_FragColor = vec4(gammaCorrect(vec3(hexCoords.xy, 0.0), 2.2), 1.0);
+    gl_FragColor = vec4(gammaCorrect(vec3(hexCoords.zw / 10.0, 0.0), 2.2), 1.0);
 }
