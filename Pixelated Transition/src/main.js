@@ -5,10 +5,11 @@ import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 import "./style.css";
 import t1 from "./assets/t1.png";
+import t2 from "./assets/t2.png";
 
 class ShaderRenderer {
   constructor() {
-    this.gui = new GUI(); // Debug UI
+    this.gui = new GUI();
     this.canvas = document.querySelector("canvas.webgl");
 
     this.scene = new THREE.Scene();
@@ -27,24 +28,53 @@ class ShaderRenderer {
   }
 
   initGeometry() {
-    this.geometry = new THREE.PlaneGeometry(1, 1, 32, 32); // Plane geometry
-    const textureImg = new THREE.TextureLoader().load(t1);
+    this.geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+
+    const texture1 = new THREE.TextureLoader().load(t1, (texture) => {
+      this.resizeAspectRatio(texture);
+    });
 
     this.material = new THREE.ShaderMaterial({
-      vertexShader: vertexShader, // Shader source
-      fragmentShader: fragmentShader, // Shader source
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
       uniforms: {
         uTexture: {
-          value: textureImg,
+          value: texture1,
         },
       },
-      side: THREE.DoubleSide, // Render both sides of the plane
+      side: THREE.DoubleSide,
     });
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.scale.y = 2 / 2.5;
-    this.mesh.scale.x = 1.3;
     this.scene.add(this.mesh);
+  }
+
+  resizeAspectRatio(texture) {
+    const textureAspect = texture.image.width / texture.image.height;
+
+    // Update UVs to preserve texture aspect ratio
+    const geometryAspect = this.sizes.width / this.sizes.height;
+    const scaleX = geometryAspect / textureAspect;
+
+    this.geometry.attributes.uv.array = this.geometry.attributes.uv.array.map(
+      (uv, index) => {
+        if (index % 2 === 0) return uv * scaleX;
+        return uv;
+      }
+    );
+
+    this.geometry.attributes.uv.needsUpdate = true;
+
+    this.updatePlaneScale();
+  }
+
+  updatePlaneScale() {
+    const aspect = this.sizes.width / this.sizes.height;
+    const fovInRadians = (this.camera.fov * Math.PI) / 180;
+    const height = 2 * Math.tan(fovInRadians / 2) * this.camera.position.z;
+    const width = height * aspect;
+
+    this.mesh.scale.set(width, height, 1);
   }
 
   initCamera() {
@@ -56,6 +86,7 @@ class ShaderRenderer {
     );
     this.camera.position.set(0.0, 0.0, 0.8);
     this.scene.add(this.camera);
+    this.updatePlaneScale();
   }
 
   initRenderer() {
@@ -85,12 +116,14 @@ class ShaderRenderer {
 
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    this.updatePlaneScale();
   }
 
   animate() {
     this.controls.update();
-    this.renderer.render(this.scene, this.camera); // Render the scene
-    window.requestAnimationFrame(() => this.animate()); // Continue animation loop
+    this.renderer.render(this.scene, this.camera);
+    window.requestAnimationFrame(() => this.animate());
   }
 
   startAnimationLoop() {
@@ -99,4 +132,4 @@ class ShaderRenderer {
 }
 
 // Initialize the renderer
-const shaderRenderer = new ShaderRenderer();
+new ShaderRenderer();
