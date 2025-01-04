@@ -18,8 +18,7 @@ vec4 sround(vec4 s) {
 
 vec4 hexCoordinates(vec2 uv) {
     vec2 s = vec2(1.0, 1.73205);
-    vec2 tovaruv = uv;
-    vec4 hexCenter = sround(vec4(uv, tovaruv - vec2(0.5, 1.0)) / s.xyxy);
+    vec4 hexCenter = sround(vec4(uv, uv - vec2(0.5, 1.0)) / s.xyxy);
     vec4 offset = vec4(uv - (hexCenter.xy * s), uv - ((hexCenter.zw + 0.5) * s));
 
     float dot1 = dot(offset.xy, offset.xy);
