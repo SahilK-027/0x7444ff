@@ -23,6 +23,7 @@ class ShaderRenderer {
     this.initRenderer();
     this.initControls();
     this.initEventListeners();
+    this.addGUIControls();
     this.startAnimationLoop();
   }
 
@@ -42,6 +43,7 @@ class ShaderRenderer {
           value: new THREE.Vector2(this.sizes.width, this.sizes.height),
         },
         uTime: { value: 0 },
+        uTransition: { value: 1 },
       },
       side: THREE.DoubleSide,
     });
@@ -95,6 +97,13 @@ class ShaderRenderer {
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     window.requestAnimationFrame(() => this.animate());
+  }
+
+  addGUIControls() {
+    // Add uTransition to GUI
+    this.gui
+      .add(this.material.uniforms.uTransition, "value", 0, 1)
+      .name("Transition"); // Slider from 0 to 1
   }
 
   startAnimationLoop() {

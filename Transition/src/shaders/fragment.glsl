@@ -1,6 +1,7 @@
 uniform sampler2D uTexture;
 uniform vec2 uResolution;
-uniform vec2 uTime;
+uniform float uTime;
+uniform float uTransition;
 
 varying vec2 vUv;
 
@@ -160,7 +161,10 @@ void main() {
     float y = pow(1.0 - max(0.0, 0.5 - hexDist), 10.0) * 1.5;
     float z = simplexNoise(hexCoords.zw * 0.5);
 
-    gl_FragColor = vec4(vec3(z), 1.0);
+    float offset = 0.2;
+    float bounceTransition = 1.0 - smoothstep(0.0, 0.5, abs(uTransition - 0.5));
+
+    gl_FragColor = vec4(vec3(bounceTransition), 1.0);
 
     // Square pixel grid
     // float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
