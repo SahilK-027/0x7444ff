@@ -4,7 +4,7 @@ import GUI from "lil-gui";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 import "./style.css";
-import t1 from "./assets/t3.png";
+import t1 from "./assets/t1.png";
 
 class ShaderRenderer {
   constructor() {
@@ -27,8 +27,7 @@ class ShaderRenderer {
   }
 
   initGeometry() {
-    const aspect = this.sizes.width / this.sizes.height;
-    this.geometry = new THREE.PlaneGeometry(aspect, 1, 32, 32);
+    this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
     const texture1 = new THREE.TextureLoader().load(t1);
 
@@ -47,24 +46,21 @@ class ShaderRenderer {
     });
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    // this.mesh.scale.y = 2/2.5;
     this.scene.add(this.mesh);
   }
 
   initCamera() {
-    const aspect = this.sizes.width / this.sizes.height;
-    const frustumHeight = 1; // Choose a logical height for your scene
-    const frustumWidth = frustumHeight * aspect;
-
+    // Adjust camera frustum based on aspect ratio
     this.camera = new THREE.OrthographicCamera(
-      -frustumWidth / 2, // left
-      frustumWidth / 2, // right
-      frustumHeight / 2, // top
-      -frustumHeight / 2, // bottom
-      0.1, // near
-      100 // far
+      -1 / 2, // left
+      1 / 2, // right
+      1 / 2, // top
+      -1 / 2, // bottom
+      0.01, // near
+      1000 // far
     );
-    this.camera.position.set(0.0, 0.0, 0.8); // Position the camera
+
+    this.camera.position.set(0.0, 0.0, 2.0); // Position the camera
     this.scene.add(this.camera);
   }
 
@@ -87,23 +83,9 @@ class ShaderRenderer {
   }
 
   handleResize() {
-    this.sizes.width = window.innerWidth;
-    this.sizes.height = window.innerHeight;
-
-    const aspect = this.sizes.width / this.sizes.height;
-    const frustumHeight = 1;
-    const frustumWidth = frustumHeight * aspect;
-
-    this.camera.left = -frustumWidth / 2;
-    this.camera.right = frustumWidth / 2;
-    this.camera.top = frustumHeight / 2;
-    this.camera.bottom = -frustumHeight / 2;
-    this.camera.updateProjectionMatrix();
-
+    // Update renderer
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    this.updatePlaneScale();
   }
 
   animate() {

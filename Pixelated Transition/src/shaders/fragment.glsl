@@ -23,16 +23,16 @@ float octagonDistance(vec2 uv) {
 
 void main() {
     // Calculate aspect correction
-    vec2 aspectCorrection = vec2(1.0, uResolution.y * 1.5 / uResolution.x);
+    vec2 aspectCorrection = vec2(1.0, uResolution.y / uResolution.x);
     vec2 correctedUvs = (vUv - 0.5) * aspectCorrection + 0.5;
 
     // Sample texture with corrected coordinates
-    vec4 texture = texture2D(uTexture, correctedUvs);
+    vec4 texture = texture2D(uTexture, vUv);
 
     gl_FragColor = texture;
-    float distance = squareDistance(correctedUvs);
+    // float distance = squareDistance(correctedUvs);
     // float distance = hexagonDistance(correctedUvs);
     // float distance = octagonDistance(correctedUvs);
 
-    gl_FragColor = vec4(vec3(distance), 1.0);
+    // gl_FragColor = vec4(vec3(distance), 1.0);
 }
