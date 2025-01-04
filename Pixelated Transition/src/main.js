@@ -4,8 +4,7 @@ import GUI from "lil-gui";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 import "./style.css";
-import t1 from "./assets/t1.png";
-import t2 from "./assets/t2.png";
+import t1 from "./assets/t3.png";
 
 class ShaderRenderer {
   constructor() {
@@ -28,65 +27,45 @@ class ShaderRenderer {
   }
 
   initGeometry() {
-    this.geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+    const aspect = this.sizes.width / this.sizes.height;
+    this.geometry = new THREE.PlaneGeometry(aspect, 1, 32, 32);
 
-    const texture1 = new THREE.TextureLoader().load(t1, (texture) => {
-      this.resizeAspectRatio(texture);
-    });
+    const texture1 = new THREE.TextureLoader().load(t1);
+
+    texture1.wrapS = texture1.wrapT = THREE.ClampToEdgeWrapping;
 
     this.material = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uTexture: {
-          value: texture1,
+        uTexture: { value: texture1 },
+        uResolution: {
+          value: new THREE.Vector2(this.sizes.width, this.sizes.height),
         },
       },
       side: THREE.DoubleSide,
     });
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+    // this.mesh.scale.y = 2/2.5;
     this.scene.add(this.mesh);
   }
 
-  resizeAspectRatio(texture) {
-    const textureAspect = texture.image.width / texture.image.height;
-
-    // Update UVs to preserve texture aspect ratio
-    const geometryAspect = this.sizes.width / this.sizes.height;
-    const scaleX = geometryAspect / textureAspect;
-
-    this.geometry.attributes.uv.array = this.geometry.attributes.uv.array.map(
-      (uv, index) => {
-        if (index % 2 === 0) return uv * scaleX;
-        return uv;
-      }
-    );
-
-    this.geometry.attributes.uv.needsUpdate = true;
-
-    this.updatePlaneScale();
-  }
-
-  updatePlaneScale() {
-    const aspect = this.sizes.width / this.sizes.height;
-    const fovInRadians = (this.camera.fov * Math.PI) / 180;
-    const height = 2 * Math.tan(fovInRadians / 2) * this.camera.position.z;
-    const width = height * aspect;
-
-    this.mesh.scale.set(width, height, 1);
-  }
-
   initCamera() {
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      this.sizes.width / this.sizes.height,
-      0.1,
-      100
+    const aspect = this.sizes.width / this.sizes.height;
+    const frustumHeight = 1; // Choose a logical height for your scene
+    const frustumWidth = frustumHeight * aspect;
+
+    this.camera = new THREE.OrthographicCamera(
+      -frustumWidth / 2, // left
+      frustumWidth / 2, // right
+      frustumHeight / 2, // top
+      -frustumHeight / 2, // bottom
+      0.1, // near
+      100 // far
     );
-    this.camera.position.set(0.0, 0.0, 0.8);
+    this.camera.position.set(0.0, 0.0, 0.8); // Position the camera
     this.scene.add(this.camera);
-    this.updatePlaneScale();
   }
 
   initRenderer() {
@@ -111,7 +90,14 @@ class ShaderRenderer {
     this.sizes.width = window.innerWidth;
     this.sizes.height = window.innerHeight;
 
-    this.camera.aspect = this.sizes.width / this.sizes.height;
+    const aspect = this.sizes.width / this.sizes.height;
+    const frustumHeight = 1;
+    const frustumWidth = frustumHeight * aspect;
+
+    this.camera.left = -frustumWidth / 2;
+    this.camera.right = frustumWidth / 2;
+    this.camera.top = frustumHeight / 2;
+    this.camera.bottom = -frustumHeight / 2;
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(this.sizes.width, this.sizes.height);
