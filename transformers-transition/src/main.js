@@ -49,6 +49,7 @@ class ShaderRenderer {
         },
         uTime: { value: 0 },
         uTransition: { value: 0.5 },
+        uPattern: { value: 0 },
       },
       side: THREE.DoubleSide,
     });
@@ -107,6 +108,17 @@ class ShaderRenderer {
     this.gui
       .add(this.material.uniforms.uTransition, "value", 0, 1)
       .name("Transition");
+    this.gui
+      .add(this.material.uniforms.uPattern, "value", {
+        Square: 0,
+        Hexagon: 1,
+        Circle: 2,
+      })
+      .name("Pattern Type")
+      .onChange((value) => {
+        console.log(value);
+        this.material.uniforms.uPattern.value = value;
+      });
   }
 
   startAnimationLoop() {
