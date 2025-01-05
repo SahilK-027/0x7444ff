@@ -145,7 +145,7 @@ float remap(float value, float a, float b, float c, float d) {
 void main() {
     // Calculate aspect correction
     vec2 aspectCorrection = vec2(1.0, uResolution.y * 1.75 / uResolution.x);
-    vec2 correctedUvs = scaleUvs(vUv, aspectCorrection);
+    vec2 correctedUvs = vUv;
 
     vec2 barrelDistortionUvs = scaleUvs(correctedUvs, vec2(float(1.0 + length(vUv - 0.5))));
 
@@ -166,14 +166,23 @@ void main() {
     float bounceTransition = 1.0 - smoothstep(0.0, 0.5, abs(uTransition - 0.5));
     float blendCut = smoothstep(vUv.y - offset, vUv.y + offset, remap(uTransition + z * 0.08 * bounceTransition, 0.0, 1.0, -1.0 * offset, 1.0 + offset));
     float merge = 1.0 - smoothstep(0.0, 0.5, abs(blendCut - 0.5));
+    float cut = step(vUv.y, uTransition + (((y + z) * 0.15) * bounceTransition));
     vec2 textureUV = correctedUvs + (y * sin(vUv.y * 15.0 - uTime) * merge * 0.025);
+    vec2 fromUV = textureUV;
+    vec2 toUV = textureUV;
+    float colorBlend = merge * hexBorder * bounceTransition;
+
+    fromUV = fromUV, vec2((1.0 + z) * 0.2 * merge + uTransition);
+    toUV = toUV, vec2((1.0 + z) * 0.2 * blendCut + uTransition);
 
     // Textures
-    vec4 texture1 = texture2D(uTexture1, textureUV);
-    vec4 texture2 = texture2D(uTexture2, textureUV);
+    vec4 texture1 = texture2D(uTexture1, fromUV);
+    vec4 texture2 = texture2D(uTexture2, toUV);
 
-    vec4 final = mix(texture1, texture2, blendCut);
+    vec4 final = mix(texture1, texture2, cut);
+    final += vec4(gammaCorrect(vec3(0.44, 0.15, 1.0), 1.2), 1.0) * colorBlend * 2.0;
     gl_FragColor = final;
+    // gl_FragColor = vec4(colorBlend);
 
     // Square pixel grid
     // float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
