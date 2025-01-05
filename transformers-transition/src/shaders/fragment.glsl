@@ -6,66 +6,15 @@ uniform float uTransition;
 
 varying vec2 vUv;
 
+/* 
+* * Helpers
+*/
 vec3 gammaCorrect(vec3 color, float gamma) {
     return pow(color, vec3(1.0 / gamma));
 }
 
-// Hex grid generation
-float hexagonDistance(vec2 uv) {
-    vec2 s = vec2(1.0, 1.73205);
-    vec2 p = abs(uv);
-    return max(dot(p, s * 0.5), p.x);
-}
-
 vec4 sround(vec4 s) {
     return floor(s + 0.5);
-}
-
-vec4 hexCoordinates(vec2 uv) {
-    vec2 s = vec2(1.0, 1.73205);
-    vec4 hexCenter = sround(vec4(uv, uv - vec2(0.5, 1.0)) / s.xyxy);
-    vec4 offset = vec4(uv - (hexCenter.xy * s), uv - ((hexCenter.zw + 0.5) * s));
-
-    float dot1 = dot(offset.xy, offset.xy);
-    float dot2 = dot(offset.zw, offset.zw);
-
-    vec4 final1 = vec4(offset.xy, hexCenter.xy);
-    vec4 final2 = vec4(offset.zw, hexCenter.zw);
-    float diff = dot1 - dot2;
-    vec4 final = mix(final1, final2, step(0.0, diff));
-
-    return final;
-}
-
-// Square grid function
-float squareGrid(vec2 uv, float gridSize, float lineWidth) {
-    vec2 grid = fract(uv * gridSize);
-    vec2 borders = smoothstep(0.0, lineWidth, grid) *
-        smoothstep(0.0, lineWidth, 1.0 - grid);
-    return 1.0 - min(borders.x, borders.y);
-}
-
-// Circular grid function
-float circularGrid(vec2 uv, float gridSize, float lineWidth) {
-    vec2 grid = fract(uv * gridSize) - 0.5;
-    float dist = length(grid);
-    return smoothstep(0.4 - lineWidth, 0.4, dist) *
-        smoothstep(0.5, 0.5 - lineWidth, dist);
-}
-
-// Octagonal grid function
-float octagonalGrid(vec2 uv, float gridSize, float lineWidth) {
-    vec2 grid = fract(uv * gridSize) - 0.5;
-    float angle = atan(grid.y, grid.x);
-    float r = length(grid);
-
-    // Create 8 sides
-    float sides = 8.0;
-    float polygon = cos(floor(0.5 + angle * sides / 6.28318) * 6.28318 / sides - angle);
-    polygon = r * polygon;
-
-    return smoothstep(0.35 - lineWidth, 0.35, polygon) *
-        smoothstep(0.4, 0.4 - lineWidth, polygon);
 }
 
 vec2 scaleUvs(vec2 uv, vec2 aspectCorrection) {
@@ -142,6 +91,80 @@ float remap(float value, float a, float b, float c, float d) {
     return c + (value - a) * (d - c) / (b - a);
 }
 
+/*
+* * Grid generators
+*/
+float hexagonDistance(vec2 uv) {
+    vec2 s = vec2(1.0, 1.73205);
+    vec2 p = abs(uv);
+    return max(dot(p, s * 0.5), p.x);
+}
+
+float octagonalDistance(vec2 uv) {
+    vec2 p = abs(uv);
+
+    float square = max(p.x, p.y);
+    float diagonal = (p.x + p.y) * 0.7071067811865476; // 1.0 / sqrt(2)
+
+    // Use min to get the octagonal distance
+    return max(square, diagonal);
+}
+
+float squareDistance(vec2 uv) {
+    vec2 p = abs(uv);
+    return max(p.x, p.y); // Maximum of the x and y components defines the square distance
+}
+
+vec4 hexCoordinates(vec2 uv) {
+    vec2 s = vec2(1.0, 1.73205);
+    vec4 hexCenter = sround(vec4(uv, uv - vec2(0.5, 1.0)) / s.xyxy);
+    vec4 offset = vec4(uv - (hexCenter.xy * s), uv - ((hexCenter.zw + 0.5) * s));
+
+    float dot1 = dot(offset.xy, offset.xy);
+    float dot2 = dot(offset.zw, offset.zw);
+
+    vec4 final1 = vec4(offset.xy, hexCenter.xy);
+    vec4 final2 = vec4(offset.zw, hexCenter.zw);
+    float diff = dot1 - dot2;
+    vec4 final = mix(final1, final2, step(0.0, diff));
+
+    return final;
+}
+
+vec4 octCoordinates(vec2 uv) {
+    // Constants for octagon geometry
+    float a = 1.0 + sqrt(2.0); // Length of octagon side
+    vec2 s = vec2(a, a); // Scale factors for octagonal grid
+
+    // Calculate centers of potential octagon cells
+    vec4 octCenter = sround(vec4(uv, uv - vec2(0.5, 1.0)) / s.xyxy);
+
+    // Calculate offsets from centers
+    vec4 offset = vec4(uv - (octCenter.xy * s), uv - ((octCenter.zw + 0.5) * s));
+
+    // Calculate distances to determine closest center
+    float dot1 = dot(offset.xy, offset.xy);
+    float dot2 = dot(offset.zw, offset.zw);
+
+    // Create final coordinates with offsets and centers
+    vec4 final1 = vec4(offset.xy, octCenter.xy);
+    vec4 final2 = vec4(offset.zw, octCenter.zw);
+
+    // Choose the closest center
+    float diff = dot1 - dot2;
+    vec4 final = mix(final1, final2, step(0.0, diff));
+
+    return final;
+}
+
+vec4 squareCoordinates(vec2 uv) {
+    vec2 squareCenter = floor(uv) + 0.5; // Center of the closest square cell
+    vec2 offset = uv - squareCenter;     // Offset from the square center
+
+    // Return both the offset and the coordinates of the square center
+    return vec4(offset, squareCenter);
+}
+
 void main() {
     // Calculate aspect correction
     vec2 aspectCorrection = vec2(1.0, uResolution.y * 1.75 / uResolution.x);
@@ -151,16 +174,32 @@ void main() {
 
     // Grid parameters
     float gridSize = 20.0;
-    float lineWidth = 0.03;
 
-    // Hex grid
+    // Get hex and octagon patterns
     vec2 hexUv = barrelDistortionUvs * gridSize;
     vec4 hexCoords = hexCoordinates(hexUv);
     float hexDist = hexagonDistance(hexCoords.xy);
     float hexBorder = smoothstep(0.47, 0.50, hexDist);
 
-    float y = pow(1.0 - max(0.0, 0.5 - hexDist), 10.0) * 1.5;
-    float z = simplexNoise(hexCoords.zw * 0.5);
+    // Octagon setup using new coordinate system
+    vec2 squareUv = barrelDistortionUvs * gridSize;
+    vec4 squareCoords = squareCoordinates(squareUv);
+    float squareDist = squareDistance(squareCoords.xy);
+    float squareBorder = smoothstep(0.47, 0.49, squareDist);
+
+    // Transition logic
+    float transitionPeriod = 16.0;
+    float t = mod(uTime, transitionPeriod) / transitionPeriod;
+    float blend = smoothstep(0.0, 1.0, (sin(t * 6.28318) + 1.0) * 0.5);
+
+    // Blend between patterns
+    float currentPattern = mix(hexBorder, squareBorder, blend);
+
+    // Blend coordinates for noise
+    vec2 blendedCoords = mix(hexCoords.zw, squareCoords.zw, blend);
+    float z = simplexNoise(blendedCoords * 0.5);
+
+    float y = mix(pow(1.0 - max(0.0, 0.5 - hexDist), 10.0) * 1.5, pow(1.0 - max(0.0, 0.5 - squareDist), 10.0) * 1.5, blend);
 
     float offset = 0.2;
     float bounceTransition = 1.0 - smoothstep(0.0, 0.5, abs(uTransition - 0.5));
@@ -170,7 +209,7 @@ void main() {
     vec2 textureUV = correctedUvs + (y * sin(vUv.y * 15.0 - uTime) * merge * 0.025);
     vec2 fromUV = textureUV;
     vec2 toUV = textureUV;
-    float colorBlend = merge * hexBorder * bounceTransition;
+    float colorBlend = merge * currentPattern * bounceTransition;
 
     fromUV = fromUV, vec2((1.0 + z) * 0.2 * merge + uTransition);
     toUV = toUV, vec2((1.0 + z) * 0.2 * blendCut + uTransition);
@@ -180,30 +219,9 @@ void main() {
     vec4 texture2 = texture2D(uTexture2, toUV);
 
     vec4 final = mix(texture1, texture2, cut);
-    final += vec4(gammaCorrect(vec3(0.44, 0.15, 1.0), 1.2), 1.0) * colorBlend * 2.0;
+    vec3 topColor = gammaCorrect(vec3(1.0, 0.84, 0.15), 1.2);
+    vec3 bottomColor = gammaCorrect(vec3(0.44, 0.15, 1.0), 1.2);
+
+    final += vec4(mix(topColor, bottomColor, 0.5), 1.0) * colorBlend * 2.0;
     gl_FragColor = final;
-    // gl_FragColor = vec4(colorBlend);
-
-    // Square pixel grid
-    // float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
-
-    // Circular grid
-    // float circleBorder = circularGrid(barrelDistortionUvs, gridSize, lineWidth);
-
-    // Octagonal grid
-    // float octagonBorder = octagonalGrid(barrelDistortionUvs, gridSize, lineWidth);
-
-    // To switch between patterns, uncomment one of these:
-    // gl_FragColor = vec4(vec3(octagonBorder), 1.0);
-    // gl_FragColor = vec4(vec3(squareBorder), 1.0);
-    // gl_FragColor = vec4(vec3(circleBorder), 1.0);
-
-    // Mix circle + octagon patterns
-    // float weightCircle = 0.25;
-    // float weightOctagon = 0.35;
-
-    // Combine patterns using weights
-    // float combinedPattern = weightCircle * circleBorder + weightOctagon * octagonBorder;
-
-    // gl_FragColor = vec4(vec3(combinedPattern), 1.0);
 }

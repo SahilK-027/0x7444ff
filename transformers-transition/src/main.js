@@ -6,6 +6,8 @@ import fragmentShader from "./shaders/fragment.glsl";
 import "./style.css";
 import t1 from "./assets/1.png";
 import t2 from "./assets/2.png";
+import t1sm from "./assets/1sm.png";
+import t2sm from "./assets/2sm.png";
 class ShaderRenderer {
   constructor() {
     this.gui = new GUI();
@@ -17,6 +19,7 @@ class ShaderRenderer {
       width: window.innerWidth,
       height: window.innerHeight,
     };
+    this.isMobile = this.sizes.width < 500;
 
     this.initGeometry();
     this.initCamera();
@@ -30,8 +33,8 @@ class ShaderRenderer {
   initGeometry() {
     this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
-    const texture1 = new THREE.TextureLoader().load(t1);
-    const texture2 = new THREE.TextureLoader().load(t2);
+    const texture1 = new THREE.TextureLoader().load(this.isMobile ? t1sm : t1);
+    const texture2 = new THREE.TextureLoader().load(this.isMobile ? t2sm : t2);
 
     texture1.wrapS = texture1.wrapT = THREE.ClampToEdgeWrapping;
 
