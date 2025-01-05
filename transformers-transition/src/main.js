@@ -8,6 +8,8 @@ import t1 from "./assets/1.png";
 import t2 from "./assets/2.png";
 import t1sm from "./assets/1sm.png";
 import t2sm from "./assets/2sm.png";
+import "./style.css";
+
 class ShaderRenderer {
   constructor() {
     this.gui = new GUI();

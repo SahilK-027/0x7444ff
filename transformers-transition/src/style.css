@@ -1,17 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  user-select: none;
 }
 
 html,
 body {
-  background-color: #000;
   overflow: hidden;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Open Sans", sans-serif;
 }
 
 .webgl {
+  width: 100vw;
+  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   outline: none;
+  z-index: 0;
+}
+
+.loader {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.underlay {
+  color: #fff;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  padding: 40px 40px;
+  z-index: 1;
+  text-align: right;
+}
+h1 {
+  font-size: 25px;
+  margin-bottom: 0px;
+  padding: 8px 0px;
+}
+p {
+  margin-bottom: 2px;
+  font-weight: 300;
+  font-size: 14px;
+}
+a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-position: below;
+  text-underline-offset: 3px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+a:hover {
+  color: #d991ff;
 }
