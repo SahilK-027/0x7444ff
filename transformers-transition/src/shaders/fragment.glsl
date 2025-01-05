@@ -150,7 +150,7 @@ void main() {
     vec2 barrelDistortionUvs = scaleUvs(correctedUvs, vec2(float(1.0 + length(vUv - 0.5))));
 
     // Grid parameters
-    float gridSize = 30.0;
+    float gridSize = 20.0;
     float lineWidth = 0.03;
 
     // Hex grid
@@ -165,13 +165,15 @@ void main() {
     float offset = 0.2;
     float bounceTransition = 1.0 - smoothstep(0.0, 0.5, abs(uTransition - 0.5));
     float blendCut = smoothstep(vUv.y - offset, vUv.y + offset, remap(uTransition + z * 0.08 * bounceTransition, 0.0, 1.0, -1.0 * offset, 1.0 + offset));
+    float merge = 1.0 - smoothstep(0.0, 0.5, abs(blendCut - 0.5));
+    vec2 textureUV = correctedUvs + (y * sin(vUv.y * 15.0 - uTime) * merge * 0.025);
 
     // Textures
-    vec4 texture1 = texture2D(uTexture1, correctedUvs);
-    vec4 texture2 = texture2D(uTexture2, correctedUvs);
+    vec4 texture1 = texture2D(uTexture1, textureUV);
+    vec4 texture2 = texture2D(uTexture2, textureUV);
 
     vec4 final = mix(texture1, texture2, blendCut);
-    gl_FragColor = vec4(final);
+    gl_FragColor = final;
 
     // Square pixel grid
     // float squareBorder = squareGrid(barrelDistortionUvs, gridSize, lineWidth);
