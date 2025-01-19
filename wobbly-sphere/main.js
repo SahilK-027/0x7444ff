@@ -44,7 +44,7 @@ rgbeLoader.load("./studio_country_hall_1k.hdr", (environmentMap) => {
 
 // Material
 debugObject.colorA = "#f80";
-debugObject.colorB = "#ffe1ad";
+debugObject.colorB = "#ffefd1";
 
 const uniforms = {
   uTime: new THREE.Uniform(0),
