@@ -3,7 +3,11 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
+import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import GUI from "lil-gui";
+import wobbleVertexShader from "./shaders/wobble/vertex.glsl";
+import wobbleFragmentShader from "./shaders/wobble/fragment.glsl";
 
 /**
  * Base
@@ -36,17 +40,36 @@ rgbeLoader.load("./studio_country_hall_1k.hdr", (environmentMap) => {
   scene.environment = environmentMap;
 
   scene.environmentIntensity = 1;
-  scene.backgroundBlurriness = 0;
 });
 
-/**
- * Wobble
- */
 // Material
-const material = new THREE.MeshPhysicalMaterial({
-  metalness: 0,
-  roughness: 0.5,
-  color: "#ffa82e",
+debugObject.colorA = "#f80";
+debugObject.colorB = "#ffe1ad";
+
+const uniforms = {
+  uTime: new THREE.Uniform(0),
+  uPositionFrequency: new THREE.Uniform(1.5),
+  uTimeFrequency: new THREE.Uniform(0.4),
+  uStrength: new THREE.Uniform(1.0),
+  uWarpPositionFrequency: new THREE.Uniform(0.38),
+  uWarpTimeFrequency: new THREE.Uniform(0.12),
+  uWarpStrength: new THREE.Uniform(1.7),
+  uColorA: new THREE.Uniform(new THREE.Color(debugObject.colorA)),
+  uColorB: new THREE.Uniform(new THREE.Color(debugObject.colorB)),
+};
+
+const material = new CustomShaderMaterial({
+  // CSM
+  baseMaterial: THREE.MeshPhysicalMaterial,
+  vertexShader: wobbleVertexShader,
+  fragmentShader: wobbleFragmentShader,
+  uniforms: uniforms,
+  silent: true,
+
+  // MeshPhysicalMaterial
+  metalness: 0.1,
+  roughness: 0.9,
+  color: "#ffffff",
   transmission: 0,
   ior: 1.5,
   thickness: 1.5,
@@ -54,30 +77,61 @@ const material = new THREE.MeshPhysicalMaterial({
   wireframe: false,
 });
 
+const depthMaterial = new CustomShaderMaterial({
+  // CSM
+  baseMaterial: THREE.MeshDepthMaterial,
+  vertexShader: wobbleVertexShader,
+  uniforms: uniforms,
+  silent: true,
+
+  // MeshDepthMaterial
+  depthPacking: THREE.RGBADepthPacking,
+});
+
 // Tweaks
+gui
+  .add(uniforms.uPositionFrequency, "value", 0, 2, 0.001)
+  .name("uPositionFrequency");
+gui.add(uniforms.uTimeFrequency, "value", 0, 2, 0.001).name("uTimeFrequency");
+gui.add(uniforms.uStrength, "value", 0, 2, 0.001).name("uStrength");
+gui
+  .add(uniforms.uWarpPositionFrequency, "value", 0, 2, 0.001)
+  .name("uWarpPositionFrequency");
+gui
+  .add(uniforms.uWarpTimeFrequency, "value", 0, 2, 0.001)
+  .name("uWarpTimeFrequency");
+gui.add(uniforms.uWarpStrength, "value", 0, 2, 0.001).name("uWarpStrength");
+gui
+  .addColor(debugObject, "colorA")
+  .onChange(() => uniforms.uColorA.value.set(debugObject.colorA));
+gui
+  .addColor(debugObject, "colorB")
+  .onChange(() => uniforms.uColorB.value.set(debugObject.colorB));
 gui.add(material, "metalness", 0, 1, 0.001);
 gui.add(material, "roughness", 0, 1, 0.001);
 gui.add(material, "transmission", 0, 1, 0.001);
 gui.add(material, "ior", 0, 10, 0.001);
 gui.add(material, "thickness", 0, 10, 0.001);
-gui.addColor(material, "color");
 
 // Geometry
-const geometry = new THREE.IcosahedronGeometry(2.5, 50);
+let geometry = new THREE.IcosahedronGeometry(2.5, 80);
+geometry = mergeVertices(geometry);
+geometry.computeTangents();
 
-// Mesh
 const wobble = new THREE.Mesh(geometry, material);
+wobble.customDepthMaterial = depthMaterial;
 scene.add(wobble);
 
 /**
  * Lights
  */
-const directionalLight = new THREE.DirectionalLight("#ffffff", 3);
-directionalLight.position.set(-1.5, 2.5, 2.25);
+const directionalLight = new THREE.DirectionalLight("#ffe1ad", 3);
+directionalLight.position.set(-2.5, -0.2, -1.25);
 
 const helper = new THREE.DirectionalLightHelper(directionalLight);
 
 scene.add(directionalLight);
+// scene.add(helper);
 
 /**
  * Sizes
@@ -140,6 +194,9 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+
+  // Materials
+  uniforms.uTime.value = elapsedTime;
 
   // Update controls
   controls.update();
