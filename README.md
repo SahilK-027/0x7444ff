@@ -97,4 +97,9 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 <td><a href="https://0x7444ff-transformers-transition.vercel.app/">Transformers Transition</a><br/></td>
 </tr>
 
+<tr>
+<td>(13)</td>
+<td><img width="300" src="https://github.com/user-attachments/assets/98b1227b-fdce-4e36-9062-c9e47a472563" alt="Adv-pattern preview"></td>
+<td><a href="https://0x7444ff-wobbly-sphere.vercel.app/">Wobbly Sphere</a><br/></td>
+
 </table>
