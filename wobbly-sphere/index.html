@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+        background-color: #fff7dd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Open Sans", sans-serif;
+      }
+
+      .underlay {
+        color: #121316;
+        position: absolute;
+        width: 100vw;
+        bottom: 0;
+        left: 0;
+        padding: 30px 30px;
+      }
+      h1 {
+        font-size: 35px;
+        margin-bottom: 0px;
+        padding: 8px 0px;
+      }
+      p {
+        margin-bottom: 2px;
+        font-weight: 300;
+        font-size: 14px;
+      }
+      a {
+        color: #974000;
+        text-decoration: underline;
+        text-underline-position: below;
+        text-underline-offset: 3px;
+        transition: all 0.3s ease;
+      }
+      a:hover {
+        color: #964500;
+      }
+
+      canvas {
+        display: block;
+        width: 600px;
+        height: 600px;
+        outline: none;
+      }
+
+      @media (max-width: 700px) {
+        canvas {
+          display: block;
+          width: 100%;
+          height: calc(100vw * 1);
+        }
+      }
+    </style>
+    <title>Wobbly Sphere</title>
+  </head>
+  <body>
+    <div class="underlay">
+      <h1>Wobbly Sphere</h1>
+      <p>
+        Made with 🧡 by
+        <a target="_blank" href="https://github.com/SahilK-027">SK027.</a>
+      </p>
+      <p>
+        Link to source Code:
+        <a
+          target="_blank"
+          href="https://github.com/SahilK-027/0x7444ff/tree/main/wobbly-sphere"
+          >Code.</a
+        >
+      </p>
+      <p>22 Jan 2024.</p>
+    </div>
+    <canvas class="webgl" id="shaderCanvas"></canvas>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

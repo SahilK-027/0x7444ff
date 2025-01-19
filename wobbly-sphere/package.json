@@ -1,0 +1,19 @@
+{
+  "name": "wobbly-sphere",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.8"
+  },
+  "dependencies": {
+    "lil-gui": "^0.20.0",
+    "three": "^0.172.0",
+    "vite-plugin-glsl": "^1.3.1"
+  }
+}
