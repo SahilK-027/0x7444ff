@@ -1,3 +1,5 @@
+<img width="100%" height="40px" alt="0x7444ff" src="https://github.com/user-attachments/assets/8faac6a0-9f17-46a1-88ae-7c51b6c557ee" /> 
+
 # 0x7444ff
 
 Welcome to the 0x7444ff Shader Collection – a compilation of GLSL shaders written by [@SahilK-027](https://github.com/SahilK-027)!
@@ -99,7 +101,12 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 
 <tr>
 <td>(13)</td>
-<td><img width="300" src="https://github.com/user-attachments/assets/98b1227b-fdce-4e36-9062-c9e47a472563" alt="Adv-pattern preview"></td>
+<td><img width="300" src="https://github.com/user-attachments/assets/98b1227b-fdce-4e36-9062-c9e47a472563" alt=">Wobbly Sphere preview"></td>
 <td><a href="https://0x7444ff-wobbly-sphere.vercel.app/">Wobbly Sphere</a><br/></td>
+
+
+<td>(42)</td>
+<td><img width="300" src="https://github.com/user-attachments/assets/1c05a82c-3494-4f3f-b350-1cdeceb3f50e" alt="Organic-pattern"></td>
+<td><a href="https://0x7444ff-organic-pattern.vercel.app/">Organic Pattern</a><br/></td>
 
 </table>
