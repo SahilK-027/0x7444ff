@@ -105,7 +105,7 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 <td><a href="https://0x7444ff-wobbly-sphere.vercel.app/">Wobbly Sphere</a><br/></td>
 
 
-<td>(42)</td>
+<td>(14)</td>
 <td><img width="300" src="https://github.com/user-attachments/assets/1c05a82c-3494-4f3f-b350-1cdeceb3f50e" alt="Organic-pattern"></td>
 <td><a href="https://0x7444ff-organic-pattern.vercel.app/">Organic Pattern</a><br/></td>
 
