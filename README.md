@@ -108,5 +108,12 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 <td>(14)</td>
 <td><img width="300" src="https://github.com/user-attachments/assets/1c05a82c-3494-4f3f-b350-1cdeceb3f50e" alt="Organic-pattern"></td>
 <td><a href="https://0x7444ff-organic-pattern.vercel.app/">Organic Pattern</a><br/></td>
+</tr>
+
+<tr>
+<td>(15)</td>
+<td><img width="300" src="https://github.com/user-attachments/assets/c344a66b-33b8-41bd-8569-8fa62fdda480" alt="2D-Day-night"></td>
+<td><a href="https://0x7444ff-2d-day-night.vercel.app/">2D Day Night</a><br/></td>
+</tr>
 
 </table>
