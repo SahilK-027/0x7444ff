@@ -114,6 +114,11 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 <td>(15)</td>
 <td><img width="300" src="https://github.com/user-attachments/assets/c344a66b-33b8-41bd-8569-8fa62fdda480" alt="2D-Day-night"></td>
 <td><a href="https://0x7444ff-2d-day-night.vercel.app/">2D Day Night</a><br/></td>
+
+  
+<td>(16)</td>
+<td><img width="300" src="https://github.com/user-attachments/assets/d64e796b-4ace-4ecf-92f9-3ebdfe20f3d1" alt="scrolling-textures"></td>
+<td><a href="https://0x7444ff-sk027-scrolling-textures.vercel.app/">Scrolling textures</a><br/></td>
 </tr>
 
 </table>
