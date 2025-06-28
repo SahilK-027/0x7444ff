@@ -133,7 +133,7 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
   // Update material
-  material.uniforms.uTime.value = elapsedTime;
+  material.uniforms.uTime.value = elapsedTime % 100;
 
   // Update controls
   controls.update();
