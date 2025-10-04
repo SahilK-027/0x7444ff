@@ -82,7 +82,7 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 
 <tr>
 <td>(9)</td>
-<td><img width="300" src="./poly-ele/poly-ele.png" alt="Poly-ele preview"></td>
+<td><img width="300" src="./poly-ele/poly_ele.png" alt="Poly-ele preview"></td>
 <td><a href="https://poly-ele-sk027.vercel.app/">Poly-ele</a><br/></td>
 
 <td>(10)</td>
