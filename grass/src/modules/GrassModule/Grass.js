@@ -147,7 +147,7 @@ export default class GrassModule {
           ),
         },
         uGrassDisplacementMap: {
-          value: this.resources.texture.grassDisplacementTexture,
+          value: this.resources.texture.grassDisplacementTexture3,
         },
         uTipColorDarkBlade: {
           value: new THREE.Color(
