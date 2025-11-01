@@ -125,6 +125,10 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 <td><img width="300" src="./grass/grass.png" alt="grass"></td>
 <td><a href="https://0x7444ff-grass-sk027.vercel.app/">Grass</a><br/></td>
 
+<td>(18)</td>
+<td><img width="300" src="./voronoi-electric-pattern/voronoi.png" alt="voronoi"></td>
+<td><a href="https://0x7444ff-voronoi-electric-pattern.vercel.app/">Voronoi electric pattern</a><br/></td>
+
 </tr>
 
 </table>
