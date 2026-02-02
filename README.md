@@ -2,32 +2,23 @@
 
 # 0x7444ff
 
-Welcome to the 0x7444ff Shader Collection – a compilation of GLSL shaders written by [@SahilK-027](https://github.com/SahilK-027)!
+Welcome to the 0x7444ff Shader Collection – a curated compilation of GLSL shaders and WebGL experiments by [@SahilK-027](https://github.com/SahilK-027). This repository showcases the intersection of mathematics, graphics programming, and digital art through 18+ interactive shader projects.
+
+## Overview
+
+This repository is a creative collection of GLSL shaders crafted for the joy of digital art and graphics programming. Each project demonstrates different shader techniques, from procedural patterns and noise functions to GPGPU particle systems and advanced rendering effects. Whether you're learning shader programming or seeking inspiration, explore where technology meets art.
 
 > [!IMPORTANT]  
 > **Before You Begin 👀**
 >
-> Performance Warning
-> Some shaders in this collection are computationally intensive. They are designed to push GPU limits and may cause performance drops on low-end or mobile devices. It’s recommended that they be tested on devices with modern graphics hardware.
+> **Performance Warning**  
+> Some shaders in this collection are computationally intensive and designed to push GPU limits. They may cause performance drops on low-end or mobile devices. Testing on devices with modern graphics hardware is recommended.
 >
-> Compatibility Considerations:
-> These shaders are tested on WebGL2-compatible browsers such as Chrome, Firefox, and Edge. However, variations may occur depending on the hardware and browser versions. For the best experience, use the latest browser version and update your graphics drivers.
+> **Compatibility Considerations**  
+> These shaders are tested on WebGL2-compatible browsers (Chrome, Firefox, Edge). Variations may occur depending on hardware and browser versions. For the best experience, use the latest browser version and keep your graphics drivers updated.
 >
-> Learning Resources and Support:
-> If you’re new to shader programming, explore [The Book of Shaders](https://thebookofshaders.com/) for guidance. For questions about this collection, start a discussion on the repository or reach out via GitHub.
-
-## Overview
-
-This repository is a creative collection of GLSL shaders crafted purely for the joy of digital art development. Enjoy the junction where technology meets Art!
-
-> [!TIP]
->
-> <details>
-> <summary>&nbsp; Why choose shader programming over built-in options?</summary>
->
-> Shader programming provides improved performance and endless customization by running directly on the GPU, allowing developers to create unique visual effects and optimize rendering for specific needs. While built-in options offer faster implementation and easier maintenance, custom shaders unlock advanced capabilities like complex lighting, post-processing effects, and physics-based rendering that aren't possible with pre-made solutions.
->
-> </details>
+> **Learning Resources**  
+> New to shader programming? Start with [The Book of Shaders](https://thebookofshaders.com/) for comprehensive guidance. For questions about this collection, open a discussion on the repository or reach out via GitHub.
 
 ## Collection Table
 
@@ -128,7 +119,64 @@ This repository is a creative collection of GLSL shaders crafted purely for the 
 <td>(18)</td>
 <td><img width="300" src="./voronoi-electric-pattern/voronoi.png" alt="voronoi"></td>
 <td><a href="https://0x7444ff-voronoi-electric-pattern.vercel.app/">Voronoi electric pattern</a><br/></td>
-
 </tr>
 
+<tr>
+<td>(19)</td>
+<td><img width="300" src="./Spectral-flow/spectral-flow.png" alt="grass"></td>
+<td><a href="https://0x7444ff-spectral-flow.vercel.app/">Spectral Flow</a><br/></td>
+</tr>
 </table>
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- A modern browser with WebGL2 support
+
+### Running a Project Locally
+
+Each project is self-contained with its own dependencies. To run any project:
+
+```bash
+# Navigate to the project directory
+cd [project-name]
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+The project will open in your browser at `http://localhost:5173` (or similar).
+
+## Tech stack
+
+- **Three.js** – 3D graphics library
+- **WebGL2** – Graphics API
+- **GLSL** – OpenGL Shading Language
+- **Vite** – Build tool and dev server
+- **JavaScript/ES6+** – Core programming language
+
+## Learning Resources
+
+- [The Book of Shaders](https://thebookofshaders.com/) – Interactive guide to GLSL
+- [Three.js Documentation](https://threejs.org/docs/) – Official Three.js docs
+- [Shadertoy](https://www.shadertoy.com/) – Community shader examples
+- [WebGL Fundamentals](https://webglfundamentals.org/) – WebGL tutorials
+- [Inigo Quilez Articles](https://iquilezles.org/articles/) – Advanced shader techniques
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Connect
+
+Created by [@SahilK-027](https://github.com/SahilK-027)
+
+---
+
+> Made with 💜 and GLSL

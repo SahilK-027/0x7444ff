@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family:
+          'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Dank Mono',
+          'Source Code Pro', monospace;
+        position: relative;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 40px;
+        left: 40px;
+        color: #fff;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .overlay * {
+        pointer-events: auto;
+      }
+
+      h1 {
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: 1.5px;
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        opacity: 0.9;
+      }
+
+      .info {
+        font-size: 13px;
+        line-height: 2;
+        color: rgba(255, 255, 255, 0.35);
+        font-weight: 400;
+        letter-spacing: 0.3px;
+      }
+
+      .info p {
+        margin: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+        opacity: 1;
+      }
+
+      a:hover {
+        opacity: 0.7;
+      }
+
+      canvas {
+        display: block;
+        width: 600px;
+        height: 600px;
+        outline: none;
+      }
+
+      @media (max-width: 700px) {
+        canvas {
+          width: 100%;
+          height: 100vh;
+        }
+
+        .overlay {
+          top: 28px;
+          left: 28px;
+        }
+
+        h1 {
+          font-size: 12px;
+          letter-spacing: 1.2px;
+        }
+
+        .info {
+          font-size: 11px;
+        }
+      }
+    </style>
+    <title>Spectral Flow</title>
+  </head>
+  <body>
+    <div class="overlay">
+      <h1>Spectral Flow</h1>
+      <div class="info">
+        <p>
+          <a target="_blank" href="https://github.com/SahilK-027">SK027</a> /
+          <a target="_blank" href="https://x.com/SahilK027">𝕏</a> /
+          <a
+            target="_blank"
+            href="https://github.com/SahilK-027/0x7444ff/tree/main/spectral-flow"
+            >Code</a
+          >
+        </p>
+        <p>02.02.2026</p>
+      </div>
+    </div>
+    <canvas class="webgl" id="shaderCanvas"></canvas>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
