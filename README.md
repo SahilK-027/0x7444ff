@@ -123,7 +123,7 @@ This repository is a creative collection of GLSL shaders crafted for the joy of 
 
 <tr>
 <td>(19)</td>
-<td><img width="300" src="./Spectral-flow/spectral-flow.png" alt="grass"></td>
+<td><img width="300" src="./spectral-flow/spectral-flow.png" alt="grass"></td>
 <td><a href="https://0x7444ff-spectral-flow.vercel.app/">Spectral Flow</a><br/></td>
 </tr>
 </table>
